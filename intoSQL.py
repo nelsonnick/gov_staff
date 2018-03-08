@@ -4,21 +4,23 @@ import requests
 import re
 import pymysql
 
-Dict = {'槐荫': 'hy.',
-        '历下': 'lx.',
-        '历城': 'lc.',
-        '商河': 'sh.',
-        '天桥': 'tq.',
-        '市中': 'sz.',
-        '市直': '',
-        '平阴': 'py.',
-        '济阳': 'jy.',
-        '章丘': 'zq.',
-        '长清': 'cq.'}
+Dict = {
+    # '槐荫': 'hy.',
+    '历下': 'lx.',
+    # '历城': 'lc.',
+    # '商河': 'sh.',
+    # '天桥': 'tq.',
+    # '市中': 'sz.',
+    # '市直': '',
+    # '平阴': 'py.',
+    # '济阳': 'jy.',
+    # '章丘': 'zq.',
+    # '长清': 'cq.'
+        }
 
 
 def department_info(dwbh, dwzd):
-    rt = requests.get("http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/UnitDetails.aspx?unitId=" + dwbh)
+    rt = requests.get("http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/UnitDetails.aspx?unitId=" + dwbh, timeout=60)
     key = rt.text
     # 去掉全部的空格
     keys = re.compile(r' ').sub('', key)
@@ -174,7 +176,7 @@ def department_info(dwbh, dwzd):
 
 def person_info(dwbh, bzlx, dwzd):
     rt = requests.get(
-        "http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx)
+        "http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx, timeout=60)
     key = rt.text
     # 定位到具体人员
     if len(re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)) == 0:
