@@ -1,22 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 import requests
+from selenium import webdriver
 import re
+import urllib.parse
 import pymysql
 
 Dict = {
-    # '槐荫': 'hy.',
+    '槐荫': 'hy.',
     '历下': 'lx.',
-    # '历城': 'lc.',
-    # '商河': 'sh.',
-    # '天桥': 'tq.',
-    # '市中': 'sz.',
-    # '市直': '',
-    # '平阴': 'py.',
-    # '济阳': 'jy.',
-    # '章丘': 'zq.',
-    # '长清': 'cq.'
+    '历城': 'lc.',
+    '商河': 'sh.',
+    '天桥': 'tq.',
+    '市中': 'sz.',
+    '市直': '',
+    '平阴': 'py.',
+    '济阳': 'jy.',
+    '章丘': 'zq.',
+    '长清': 'cq.'
         }
+
+
+def department_get(dwzd):
+    browser = webdriver.Chrome()
+    browser.get("http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/TreeViewPage.aspx")
+    t = browser.page_source
+    browser.close()
+    department_string = re.compile(r"ipt:f\(.+?\);\" title=").findall(t)
+    file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
+    for d in department_string:
+        code = d.split('\'')[1]
+        name = urllib.parse.unquote(d.split('\'')[3])
+        department_info(code, dwzd)
+        file.write(code + "\t" + name + "\n")
+    file.close()
 
 
 def department_info(dwbh, dwzd):
@@ -245,13 +262,7 @@ def person_info(dwbh, bzlx, dwzd):
 
 def down():
     for location in Dict:
-        f = open(location)
-        line = f.readline()
-        while line:
-            department_info(line.replace("\n", ""), location)
-            line = f.readline()
-        f.close()
+        department_get(location)
 
 
 down()
-# department_info("037001004401", "槐荫")
