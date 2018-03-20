@@ -5,6 +5,7 @@ from selenium import webdriver
 import re
 import urllib.parse
 import pymysql
+from bs4 import BeautifulSoup
 
 # 槐荫区：单位、姓名、性别
 # 市中区：单位、部门、姓名、性别
@@ -15,17 +16,18 @@ import pymysql
 # 市直：单位、姓名、性别、占用编制情况
 
 Dict = {
-    '槐荫': 'hy.',
-    '历下': 'lx.',
-    '历城': 'lc.',
-    '商河': 'sh.',
-    '天桥': 'tq.',
-    '市中': 'sz.',
-    '市直': '',
-    '平阴': 'py.',
-    '济阳': 'jy.',
-    '章丘': 'zq.',
-    '长清': 'cq.'
+    '槐荫': 'http://hy.jnbb.gov.cn/smzgs/',
+    # '历下': 'http://lx.jnbb.gov.cn/smzgs/',
+    # '历城': 'http://lc.jnbb.gov.cn/smzgs/',
+    # '商河': 'http://sh.jnbb.gov.cn/smzgs/',
+    # '天桥': 'http://tq.jnbb.gov.cn/smzgs/',
+    # '市中': 'http://sz.jnbb.gov.cn/smzgs/',
+    # '市直': 'http://jnbb.gov.cn/smzgs/',
+    # '平阴': 'http://py.jnbb.gov.cn/smzgs/',
+    # '济阳': 'http://jy.jnbb.gov.cn/smzgs/',
+    # '章丘': 'http://zq.jnbb.gov.cn/smzgs/',
+    # '长清': 'http://cq.jnbb.gov.cn/smzgs/',
+    '青岛': 'http://120.221.95.1:1888/',
         }
 
 
@@ -108,7 +110,7 @@ def save_person(person, dwzd, dwbh, bzlx):
 
 def down_person(dwmc, dwbh, bzlx, dwzd):
     rt = requests.get(
-        "http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx, timeout=60)
+        Dict[dwzd] + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx, timeout=60)
     key = rt.text
     titles = re.findall(r'<th.+?</th>', key)
     cols = []
@@ -140,7 +142,7 @@ def down_person(dwmc, dwbh, bzlx, dwzd):
 
 def get_department(dwzd):
     browser = webdriver.Chrome()
-    browser.get("http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/TreeViewPage.aspx")
+    browser.get(Dict[dwzd] + "TreeViewPage.aspx")
     t = browser.page_source
     browser.close()
     department_string = re.compile(r"ipt:f\(.+?\);\" title=").findall(t)
@@ -154,27 +156,28 @@ def get_department(dwzd):
 
 
 def down_department(dwbh, dwzd):
-    rt = requests.get("http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/UnitDetails.aspx?unitId=" + dwbh, timeout=60)
+    print(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh)
+    rt = requests.get(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh, timeout=60)
     key = rt.text
     # 去掉全部的空格
     keys = re.compile(r' ').sub('', key)
     # 定位到单位名称
     patternA_1 = re.compile(r'<spanid="lblUnitName"><b><fontsize="3">.+?</font></b></span>')
-    nameA_1 = re.search(patternA_1, keys).group(0)
-    # 获取单位名称
-    patternA_2 = re.compile(r'3">.+?</')
-    nameA_2 = re.search(patternA_2, nameA_1).group(0)
-    dwmc = nameA_2[3:len(nameA_2) - 2]
+    if re.search(patternA_1, keys) is None:
+        dwmc = ''
+    else:
+        nameA_2 = re.search(re.compile(r'3">.+?</'), re.search(patternA_1, keys).group(0)).group(0)
+        dwmc = nameA_2[3:len(nameA_2) - 2]
+    print(dwmc)
     # 定位到其它名称
-    patternB_1 = re.compile(r'11pt"colspan=\'3\'>[\s\S]*<spanclass="STYLE2">领导职数</span>')
+    print(keys)
+    patternB_1 = re.compile(r'11pt"colspan=\'3\'>.+?<spanclass="STYLE2">领导职数</span>')
     if re.search(patternB_1, keys) is None:
         qtmc = ""
     else:
-        nameB_1 = re.search(patternB_1, keys).group(0)
-        # 获取其它名称
-        patternB_2 = re.compile(r'3\'>[\s\S]*</td>')
-        nameB_2 = re.search(patternB_2, nameB_1).group(0)
+        nameB_2 = re.search(re.compile(r'3\'>.+?</td>'), re.search(patternB_1, keys).group(0)).group(0)
         qtmc = nameB_2[3:len(nameB_2) - 5].strip()
+    print(qtmc)
     # 定位到领导职数
     patternC_1 = re.compile(r'<spanclass="STYLE2">\d*</span>')
     if re.search(patternC_1, keys) is None:
@@ -182,6 +185,7 @@ def down_department(dwbh, dwzd):
     else:
         nameC_1 = re.search(patternC_1, keys).group(0)
         ldzs = nameC_1[20:len(nameC_1) - 7]
+    print(ldzs)
     # 定位到级别
     patternD_1 = re.compile(r'<spanid="lblUnitGuiGe"><b><fontsize="3">.+?</font></b></span>')
     if re.search(patternD_1, keys) is None:
@@ -313,4 +317,54 @@ def down():
         get_department(location)
 
 
-down()
+# down_department('037002000094', '青岛')
+# down_department('037001004401414', '槐荫')
+
+
+def down(dwbh, dwzd):
+    print(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh)
+    rt = requests.get(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh, timeout=60)
+    soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
+    dwmc = soup.find_all('tr')[0].find_all('td')[1].span.b.font.string.strip()
+    qtmc = soup.find_all('tr')[1].find_all('td')[1].string.strip()
+    ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
+    jb = soup.find_all('tr')[2].find_all('td')[3].span.b.font.string.strip()
+    nsjg = soup.find_all('tr')[8].td.span.string.strip()
+    number = soup.find_all('tr')[4].td.div.table.find_all('tr')
+    xz_plan_num = xz_real_num = sy_plan_num = sy_real_num = gq_plan_num = gq_real_num = '0'
+    for num in number:
+        if num.find_all('td')[0].string.strip().find("行政编制数") != -1:
+            if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                xz_plan_num = "0"
+            else:
+                xz_plan_num = num.find_all('td')[1].font.string.strip()
+            if num.find_all('td')[3].a.string.strip() == "&nbsp;":
+                xz_real_num = "0"
+            else:
+                xz_real_num = num.find_all('td')[3].a.string.strip()
+        elif num.find_all('td')[0].string.strip().find("事业编制数") != -1:
+            if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                sy_plan_num = "0"
+            else:
+                sy_plan_num = num.find_all('td')[1].font.string.strip()
+            if num.find_all('td')[3].a.string.strip() == "&nbsp;":
+                sy_real_num = "0"
+            else:
+                sy_real_num = num.find_all('td')[3].a.string.strip()
+        elif num.find_all('td')[0].string.strip().find("工勤编制数") != -1:
+            if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                gq_plan_num = "0"
+            else:
+                gq_plan_num = num.find_all('td')[1].font.string.strip()
+            if num.find_all('td')[3].a.string.strip() == "&nbsp;":
+                gq_real_num = "0"
+            else:
+                gq_real_num = num.find_all('td')[3].a.string.strip()
+        else:
+            pass
+        lx = re.search(re.compile(r'BZLX=.+?$'), num.find_all('td')[3].a['href']).group(0)
+        bzlx = lx[5:len(lx)]
+
+
+
+down('037001004401', '槐荫')
