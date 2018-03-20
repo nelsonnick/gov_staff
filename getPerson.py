@@ -106,7 +106,7 @@ def save_person(person, dwzd, dwbh, bzlx):
     db.close()
 
 
-def down_person(dwmc, dwbh, bzlx, dwzd):
+def person_info(dwbh, bzlx, dwzd):
     rt = requests.get(
         "http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx, timeout=60)
     key = rt.text
@@ -119,23 +119,18 @@ def down_person(dwmc, dwbh, bzlx, dwzd):
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
             save_person(get_person_info(cols, information), dwzd, dwbh, bzlx)
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 4:
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
             save_person(get_person_info(cols, information), dwzd, dwbh, bzlx)
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 5:
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
             save_person(get_person_info(cols, information), dwzd, dwbh, bzlx)
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
-    elif len(cols) == 0:
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->无人员信息！')
     else:
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->无法识别！')
+        print('出现六列表格，无法识别')
 
 
 def get_department(dwzd):
@@ -148,12 +143,12 @@ def get_department(dwzd):
     for d in department_string:
         code = d.split('\'')[1]
         name = urllib.parse.unquote(d.split('\'')[3])
-        down_department(code, dwzd)
+        department_info(code, dwzd)
         file.write(code + "\t" + name + "\n")
     file.close()
 
 
-def down_department(dwbh, dwzd):
+def department_info(dwbh, dwzd):
     rt = requests.get("http://" + Dict[dwzd] + "jnbb.gov.cn/smzgs/UnitDetails.aspx?unitId=" + dwbh, timeout=60)
     key = rt.text
     # 去掉全部的空格
@@ -250,7 +245,7 @@ def down_department(dwbh, dwzd):
         patternH = re.compile(r"BZLX=.+?'style='")
         nameH = re.search(patternH, name).group(0)
         bzlx = nameH[5:len(nameH) - 8]
-        down_person(dwmc, dwbh, bzlx, dwzd)
+        person_info(dwbh, bzlx, dwzd)
     # 定位到编制数
     nameJJ = re.findall(r'<tdwidth="18%">.+?</a>名\)</td>', keys)
     for name in nameJJ:
@@ -293,7 +288,7 @@ def down_department(dwbh, dwzd):
         patternO = re.compile(r"BZLX=.+?'style='")
         nameO = re.search(patternO, name).group(0)
         bzlx = nameO[5:len(nameO) - 8]
-        down_person(dwmc, dwbh, bzlx, dwzd)
+        person_info(dwbh, bzlx, dwzd)
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
     sql = "INSERT INTO department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, xz_bzs, xz_sjs, sy_bzs, sy_sjs, gq_bzs, gq_sjs) \
@@ -305,7 +300,7 @@ def down_department(dwbh, dwzd):
     except:
         db.rollback()
     db.close()
-    # print(dwzd + ':' + dwbh + '-' + dwmc + '下载完成！')
+    print(dwzd + ":" + dwbh + "下载完成！")
 
 
 def down():
