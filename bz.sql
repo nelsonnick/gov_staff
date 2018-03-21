@@ -28,12 +28,12 @@ CREATE TABLE `department` (
   `ldzs` varchar(255) DEFAULT NULL COMMENT '领导职数',
   `jb` varchar(255) DEFAULT NULL COMMENT '级别',
   `nsjg` varchar(255) DEFAULT NULL COMMENT '内设机构',
-  `xz_bzs` varchar(255) DEFAULT NULL COMMENT '行政编制数',
-  `xz_sjs` varchar(255) DEFAULT NULL COMMENT '行政实际数',
-  `sy_bzs` varchar(255) DEFAULT NULL COMMENT '事业编制数',
-  `sy_sjs` varchar(255) DEFAULT NULL COMMENT '事业实际数',
-  `gq_bzs` varchar(255) DEFAULT NULL COMMENT '工勤编制数',
-  `gq_sjs` varchar(255) DEFAULT NULL COMMENT '工勤实际数',
+  `xz_plan_num` varchar(255) DEFAULT NULL COMMENT '行政编制数',
+  `xz_real_num` varchar(255) DEFAULT NULL COMMENT '行政实际数',
+  `sy_plan_num` varchar(255) DEFAULT NULL COMMENT '事业编制数',
+  `sy_real_num` varchar(255) DEFAULT NULL COMMENT '事业实际数',
+  `gq_plan_num` varchar(255) DEFAULT NULL COMMENT '工勤编制数',
+  `gq_real_num` varchar(255) DEFAULT NULL COMMENT '工勤实际数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

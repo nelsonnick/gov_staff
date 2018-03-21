@@ -1,158 +1,27 @@
-#!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
-import requests
-from selenium import webdriver
-import re
-import urllib.parse
-import pymysql
-
-
-class Person:
-    def __init__(self, dw, xm, xb, bm, zybzqk):
-        self.dw = dw
-        self.xm = xm
-        self.xb = xb
-        self.bm = bm
-        self.zybzqk = zybzqk
-
-
-def get_person_info(cols, info):
-    try:
-        cols.index(['单位'])
-    except ValueError:
-        dw_num = ''
-    else:
-        dw_num = cols.index(['单位'])
-    try:
-        cols.index(['姓名'])
-    except ValueError:
-        xm_num = ''
-    else:
-        xm_num = cols.index(['姓名'])
-    try:
-        cols.index(['部门'])
-    except ValueError:
-        bm_num = ''
-    else:
-        bm_num = cols.index(['部门'])
-    try:
-        cols.index(['性别'])
-    except ValueError:
-        xb_num = ''
-    else:
-        xb_num = cols.index(['性别'])
-    try:
-        cols.index(['占用编制情况'])
-    except ValueError:
-        zybzqk_num = ''
-    else:
-        zybzqk_num = cols.index(['占用编制情况'])
-    if dw_num != '':
-        dw = info[dw_num][4:len(info[dw_num]) - 5]
-    else:
-        dw = ''
-    if xm_num != '':
-        xm = info[xm_num][4:len(info[xm_num]) - 5]
-    else:
-        xm = ''
-    if xb_num != '':
-        xb = info[xb_num][4:len(info[xb_num]) - 5]
-    else:
-        xb = ''
-    if bm_num != '':
-        bm = info[bm_num][4:len(info[bm_num]) - 5]
-    else:
-        bm = ''
-    if zybzqk_num != '':
-        zybzqk = info[zybzqk_num][4:len(info[zybzqk_num]) - 5]
-    else:
-        zybzqk = ''
-    return Person(dw, xm, xb, bm, zybzqk)
-
-
-def save_person(person, dwzd, dwbh, bzlx):
-    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
-    cursor = db.cursor()
-    sql = "INSERT INTO person(dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk) \
-                                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
-          (dwzd, dwbh, person.dw, person.bm, person.xm, person.xb, bzlx, person.zybzqk)
-    try:
-        cursor.execute(sql)
-        db.commit()
-    except:
-        db.rollback()
-    db.close()
-
-
-def down_person(dwmc, dwbh, bzlx, dwzd):
-    rt = requests.get(
-        "http://120.221.95.1:1888/PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx, timeout=60)
-    key = rt.text
-    titles = re.findall(r'<th.+?</th>', key)
-    cols = []
-    for title in titles:
-        cols.append(re.findall(r'[\u4e00-\u9fa5]{2,}', title))
-    if len(cols) == 3:
-        persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td>', key)
-        for person in persons:
-            information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person_info(cols, information), dwzd, dwbh, bzlx)
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
-    elif len(cols) == 4:
-        persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
-        for person in persons:
-            information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person_info(cols, information), dwzd, dwbh, bzlx)
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
-    elif len(cols) == 5:
-        persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
-        for person in persons:
-            information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person_info(cols, information), dwzd, dwbh, bzlx)
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
-    elif len(cols) == 0:
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->无人员信息！')
-    else:
-        print(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->无法识别！')
-
-
-def get_department(dwzd):
-    browser = webdriver.Chrome()
-    browser.get("http://120.221.95.1:1888/TreeViewPage.aspx?type=dep")
-    t = browser.page_source
-    browser.close()
-    department_string = re.compile(r"ipt:f\(.+?\);\" title=").findall(t)
-    file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
-    for d in department_string:
-        code = d.split('\'')[1]
-        name = urllib.parse.unquote(d.split('\'')[3])
-        down_department(code, dwzd)
-        file.write(code + "\t" + name + "\n")
-    file.close()
-
-
-def down_department(dwbh, dwzd):
-    rt = requests.get("http://120.221.95.1:1888/UnitDetails.aspx?unitId=" + dwbh, timeout=60)
+# 这个也是分析网页的，已废弃
+def downs(dwbh, dwzd):
+    print(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh)
+    rt = requests.get(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh, timeout=60)
     key = rt.text
     # 去掉全部的空格
     keys = re.compile(r' ').sub('', key)
     # 定位到单位名称
     patternA_1 = re.compile(r'<spanid="lblUnitName"><b><fontsize="3">.+?</font></b></span>')
-    nameA_1 = re.search(patternA_1, keys).group(0)
-    # 获取单位名称
-    patternA_2 = re.compile(r'3">.+?</')
-    nameA_2 = re.search(patternA_2, nameA_1).group(0)
-    dwmc = nameA_2[3:len(nameA_2) - 2]
+    if re.search(patternA_1, keys) is None:
+        dwmc = ''
+    else:
+        nameA_2 = re.search(re.compile(r'3">.+?</'), re.search(patternA_1, keys).group(0)).group(0)
+        dwmc = nameA_2[3:len(nameA_2) - 2]
+    print(dwmc)
     # 定位到其它名称
-    patternB_1 = re.compile(r'11pt"colspan=\'3\'>[\s\S]*<spanclass="STYLE2">领导职数</span>')
+    print(keys)
+    patternB_1 = re.compile(r'11pt"colspan=\'3\'>.+?<spanclass="STYLE2">领导职数</span>')
     if re.search(patternB_1, keys) is None:
         qtmc = ""
     else:
-        nameB_1 = re.search(patternB_1, keys).group(0)
-        # 获取其它名称
-        patternB_2 = re.compile(r'3\'>[\s\S]*</td>')
-        nameB_2 = re.search(patternB_2, nameB_1).group(0)
+        nameB_2 = re.search(re.compile(r'3\'>.+?</td>'), re.search(patternB_1, keys).group(0)).group(0)
         qtmc = nameB_2[3:len(nameB_2) - 5].strip()
+    print(qtmc)
     # 定位到领导职数
     patternC_1 = re.compile(r'<spanclass="STYLE2">\d*</span>')
     if re.search(patternC_1, keys) is None:
@@ -160,6 +29,7 @@ def down_department(dwbh, dwzd):
     else:
         nameC_1 = re.search(patternC_1, keys).group(0)
         ldzs = nameC_1[20:len(nameC_1) - 7]
+    print(ldzs)
     # 定位到级别
     patternD_1 = re.compile(r'<spanid="lblUnitGuiGe"><b><fontsize="3">.+?</font></b></span>')
     if re.search(patternD_1, keys) is None:
@@ -284,6 +154,3 @@ def down_department(dwbh, dwzd):
         db.rollback()
     db.close()
     # print(dwzd + ':' + dwbh + '-' + dwmc + '下载完成！')
-
-
-get_department('青岛')
