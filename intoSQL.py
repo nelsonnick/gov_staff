@@ -155,7 +155,7 @@ def get_department(dwzd):
     file.close()
 
 
-def down_department(dwbh, dwzd):
+def downs(dwbh, dwzd):
     print(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh)
     rt = requests.get(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh, timeout=60)
     key = rt.text
@@ -321,10 +321,10 @@ def down():
 # down_department('037001004401414', '槐荫')
 
 
-def down(dwbh, dwzd):
-    print(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh)
+def down_department(dwbh, dwzd):
     rt = requests.get(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh, timeout=60)
     soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
+    print(soup)
     dwmc = soup.find_all('tr')[0].find_all('td')[1].span.b.font.string.strip()
     qtmc = soup.find_all('tr')[1].find_all('td')[1].string.strip()
     ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
@@ -364,7 +364,18 @@ def down(dwbh, dwzd):
             pass
         lx = re.search(re.compile(r'BZLX=.+?$'), num.find_all('td')[3].a['href']).group(0)
         bzlx = lx[5:len(lx)]
+        down_person(dwmc, dwbh, bzlx, dwzd)
+    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    cursor = db.cursor()
+    sql = "INSERT INTO department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, xz_plan_num, xz_real_num, sy_plan_num, sy_real_num, gq_plan_num, gq_real_num) \
+          VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
+          (dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, xz_plan_num, xz_real_num, sy_plan_num, sy_real_num, gq_plan_num, gq_real_num)
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except:
+        db.rollback()
+    db.close()
 
 
-
-down('037001004401', '槐荫')
+down_department('037002000094', '青岛')
