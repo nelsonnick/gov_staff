@@ -27,7 +27,7 @@ CREATE TABLE `department` (
   `qtmc` varchar(255) DEFAULT NULL COMMENT '其他名称',
   `ldzs` varchar(255) DEFAULT NULL COMMENT '领导职数',
   `jb` varchar(255) DEFAULT NULL COMMENT '级别',
-  `nsjg` varchar(255) DEFAULT NULL COMMENT '内设机构',
+  `nsjg` varchar(999) DEFAULT NULL COMMENT '内设机构',
   `xz_plan_num` varchar(255) DEFAULT NULL COMMENT '行政编制数',
   `xz_real_num` varchar(255) DEFAULT NULL COMMENT '行政实际数',
   `sy_plan_num` varchar(255) DEFAULT NULL COMMENT '事业编制数',

@@ -76,7 +76,7 @@ def get_person_info(cols, info):
 
 
 def save_person(person, dwzd, dwbh, bzlx):
-    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    db = pymysql.connect("localhost", "root", "root", "qd", charset='utf8')
     cursor = db.cursor()
     sql = "INSERT INTO person(dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk) \
                                       VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
@@ -91,8 +91,12 @@ def save_person(person, dwzd, dwbh, bzlx):
 
 
 def down_person(dwmc, dwbh, bzlx, dwzd):
-    rt = requests.get(
-        Dict[dwzd] + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx, timeout=1000)
+    try:
+        rt = requests.get(Dict[dwzd] + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx, timeout=1000)
+    except:
+        file = open("C:\\人员列表抓取错误.txt", "a", encoding='utf-8')
+        file.write(dwzd + "\t" + dwbh + "\t" + dwmc + "\t" + bzlx + "\t" + Dict[dwzd] + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx + "\n")
+        file.close()
     key = rt.text
     titles = re.findall(r'<th.+?</th>', key)
     cols = []
@@ -129,6 +133,7 @@ def get_department(dwzd):
     browser.close()
     department_string = re.compile(r'ipt:f\(.+?\);\"').findall(t)
     file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
+    # 037002002022026
     for d in department_string:
         code = d.split('\'')[1]
         name = urllib.parse.unquote(d.split('\'')[3])
@@ -139,8 +144,14 @@ def get_department(dwzd):
 
 def down_department(dwbh, dwzd):
     xz_plan_num = xz_real_num = sy_plan_num = sy_real_num = gq_plan_num = gq_real_num = '0'
-    rt = requests.get(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh, timeout=1000)
-    # print(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh)
+    try:
+        rt = requests.get(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh, timeout=1000)
+    except:
+        file = open("C:\\抓取错误.txt", "a", encoding='utf-8')
+        file.write(Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh + "\n")
+        file.close()
+        print(dwzd + ':' + dwbh + '-' + '--->抓取失败！')
+        return
     soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
     if soup.find_all('tr')[0].find_all('td')[1].span.b.font.string is not None:
         dwmc = soup.find_all('tr')[0].find_all('td')[1].span.b.font.string.strip()
@@ -161,7 +172,7 @@ def down_department(dwbh, dwzd):
         jb = soup.find_all('tr')[2].find_all('td')[3].span.b.font.string.strip()
     else:
         jb = ''
-    if soup.find_all(id="lblNeiSheJG"):
+    if soup.find_all(id="lblNeiSheJG")[0].string is not None:
         nsjg = soup.find_all(id="lblNeiSheJG")[0].string.strip()
     else:
         nsjg = ''
@@ -212,7 +223,7 @@ def down_department(dwbh, dwzd):
     else:
         sy_real_num = ''
 
-    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    db = pymysql.connect("localhost", "root", "root", "qd", charset='utf8')
     cursor = db.cursor()
     sql = "INSERT INTO department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, xz_plan_num, xz_real_num, sy_plan_num, sy_real_num, gq_plan_num, gq_real_num) \
           VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
@@ -232,4 +243,4 @@ def down():
 
 
 down()
-# down_department('037002000266', '青岛')
+# down_department('037002000150052', '青岛')
