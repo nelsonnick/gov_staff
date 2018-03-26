@@ -12,6 +12,7 @@ from department import department_text
 from department import save_department
 from department import get_department
 from department import down_department_dwbh_json
+from selenium import webdriver
 
 Dict = {
     '烟台': 'http://smz.yantai.gov.cn/'
@@ -57,13 +58,12 @@ def down_person(dwzd, dwbh, dwmc, bzlx):
 def down_department(dwzd, dwbh, dwmc):
     xz_plan_num = xz_real_num = sy_plan_num = sy_real_num = gq_plan_num = gq_real_num = '0'
     url = Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh
-    try:
-        rt = requests.get(url, timeout=1000)
-    except:
-        get_department_err(dwzd, dwbh, dwmc, url)
-        return
-    print(BeautifulSoup(rt.text, "html.parser"))
-    soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
+    browser = webdriver.Chrome()
+    browser.get(url)
+    t = browser.page_source
+    browser.close()
+    print(BeautifulSoup(t, "html.parser").form.div.table)
+    soup = BeautifulSoup(t, "html.parser").div.table.find_all('tr')[2].td.table
     if soup.find_all('tr')[0].find_all('td')[1].span.b.font.string is not None:
         dwmc = soup.find_all('tr')[0].find_all('td')[1].span.b.font.string.strip()
     else:
@@ -142,3 +142,4 @@ def down():
         file.close()
 
 
+down_department('烟台', '037006000401423', '烟台市纪委市监委派驻第一纪检监察组')
