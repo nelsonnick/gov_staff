@@ -25,7 +25,7 @@ class Department:
         self.gq_real_num = gq_real_num
 
 
-def down_department_code(dwzd, url):
+def down_department_dwbh(dwzd, url):
     browser = webdriver.Chrome()
     browser.get(url + "TreeViewPage.aspx")
     t = browser.page_source
@@ -33,10 +33,30 @@ def down_department_code(dwzd, url):
     department_string = re.compile(r'ipt:f\(.+?\);\"').findall(t)
     file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
     for d in department_string:
-        code = d.split('\'')[1]
-        name = urllib.parse.unquote(d.split('\'')[3])
-        file.write(code + "\t" + name + "\n")
+        dwbh = d.split('\'')[1]
+        dwmc = urllib.parse.unquote(d.split('\'')[3])
+        file.write(dwbh + "\t" + dwmc + "\n")
     file.close()
+
+
+def down_department_dwbh_json(dwzd, url):
+    browser = webdriver.Chrome()
+    browser.get(url + "TreeViewPage.aspx")
+    t = browser.page_source
+    browser.close()
+    department_string = re.compile(r'\"name\":\".+?\",\"id\":\:\d{0, }\"').findall(t)
+    file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
+    for d in department_string:
+        dwbh = d.split('\"')[7]
+        dwmc = urllib.parse.unquote(d.split('\"')[3])
+        file.write(dwbh + "\t" + dwmc + "\n")
+    file.close()
+
+
+def get_department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, xz_plan_num, xz_real_num, sy_plan_num, sy_real_num,
+                   gq_plan_num, gq_real_num):
+    return Department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, xz_plan_num, xz_real_num, sy_plan_num, sy_real_num,
+                      gq_plan_num, gq_real_num)
 
 
 def save_department(department):
@@ -52,6 +72,26 @@ def save_department(department):
         cursor.execute(sql)
         db.commit()
     except:
-        print(department.dwzd + ':' + department.dwbh + '-' + department.dwmc + '-' + '--->保存错误！')
+        department_text(department.dwzd + ':' + department.dwbh + '-' + department.dwmc + '-' + '--->保存错误！')
         db.rollback()
     db.close()
+
+
+def get_department_err(dwzd, dwbh, dwmc, url):
+    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    cursor = db.cursor()
+    sql = "INSERT INTO department_err(dwzd, dwbh, dwmc, url)VALUES ('%s', '%s', '%s', '%s')" % (dwzd, dwbh, dwmc, url)
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except:
+        department_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + url + '--->打开单位信息错误！')
+        db.rollback()
+    db.close()
+
+
+def department_text(info):
+    file = open("C:\\部门提示信息.txt", "a", encoding='utf-8')
+    file.write(info + "\n")
+    file.close()
+    print(info)

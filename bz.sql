@@ -36,7 +36,18 @@ CREATE TABLE `department` (
   `gq_real_num` varchar(255) DEFAULT NULL COMMENT '工勤实际数',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+-- ----------------------------
+-- Table structure for department_err
+-- ----------------------------
+DROP TABLE IF EXISTS `department_err`;
+CREATE TABLE `department_err` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
+  `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
+  `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
+  `url` varchar(255) DEFAULT NULL COMMENT '访问网址',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------
 -- Table structure for person
 -- ----------------------------
@@ -51,5 +62,18 @@ CREATE TABLE `person` (
   `ryxb` varchar(255) DEFAULT NULL COMMENT '人员性别',
   `bzlx` varchar(255) DEFAULT NULL COMMENT '编制类型',
   `bzqk` varchar(255) DEFAULT NULL COMMENT '编制情况',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- ----------------------------
+-- Table structure for person_err
+-- ----------------------------
+DROP TABLE IF EXISTS `person_err`;
+CREATE TABLE `person_err` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
+  `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
+  `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
+  `bzlx` varchar(255) DEFAULT NULL COMMENT '编制类型',
+  `url` varchar(255) DEFAULT NULL COMMENT '访问地址',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

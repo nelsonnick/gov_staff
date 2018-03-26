@@ -75,11 +75,31 @@ def save_person(person):
     cursor = db.cursor()
     sql = "INSERT INTO person(dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk) \
                                       VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
-          (person.dwzd, person.dwbh, person.dwmc, person.ssbm, person.ryxm, person.ryxb, person.bzlx, person.zybzqk)
+          (person.dwzd, person.dwbh, person.dwmc, person.ssbm, person.ryxm, person.ryxb, person.bzlx, person.bzqk)
     try:
         cursor.execute(sql)
         db.commit()
     except:
-        print(person.dwzd + ':' + person.dwbh + '-' + person.ryxm + '-' + person.bzlx + '--->保存错误！')
+        person_text(person.dwzd + ':' + person.dwbh + '-' + person.ryxm + '-' + person.bzlx + '--->保存错误！')
         db.rollback()
     db.close()
+
+
+def get_person_err(dwzd, dwbh, dwmc, bzlx, url):
+    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    cursor = db.cursor()
+    sql = "INSERT INTO person_err(dwzd, dwbh, dwmc, bzlx, url)VALUES ('%s', '%s', '%s', '%s', '%s')" % (dwzd, dwbh, dwmc, bzlx, url)
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except:
+        person_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '-' + url + '--->打开人员信息错误！')
+        db.rollback()
+    db.close()
+
+
+def person_text(info):
+    file = open("C:\\人员提示信息.txt", "a", encoding='utf-8')
+    file.write(info + "\n")
+    file.close()
+    print(info)
