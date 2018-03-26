@@ -44,7 +44,7 @@ def down_department_dwbh_json(dwzd, url):
     browser.get(url + "TreeViewPage.aspx")
     t = browser.page_source
     browser.close()
-    department_string = re.compile(r'\"name\":\".+?\",\"id\":\:\d{0, }\"').findall(t)
+    department_string = re.compile(r'\"name\":\".+?\",\"id\":\"\d{0,}\"').findall(t)
     file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
     for d in department_string:
         dwbh = d.split('\"')[7]
