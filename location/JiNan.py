@@ -267,3 +267,4 @@ def down_structure_all():
         file.write(down_structure_one(dwzd))
         print(dwzd + '：已下载完成！')
     file.close()
+
