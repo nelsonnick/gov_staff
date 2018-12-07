@@ -267,3 +267,32 @@ def down_structure_all():
         file.write(down_structure_one(dwzd))
         print(dwzd + '：已下载完成！')
     file.close()
+
+
+city = district = category = type = ''
+for line in open("c:\\济南.txt", "r", encoding='UTF-8'):
+    if line == '\t济南市\n':
+        city = line
+        print(city)
+        continue
+    if line == '\t\t市直\n':
+        district = line
+        print(district)
+        continue
+    if line == '\t\t\t党委\n':
+        category = line
+        print(category)
+        continue
+    if line == '\t\t\t\t行政机关\n':
+        type = line
+        print(type)
+        continue
+    if line == '\t\t\t\t直属事业单位\n':
+        type = line
+        print(type)
+        continue
+    if line == '\t\t\t人大\n':
+        category = line
+        print(category)
+        continue
+
