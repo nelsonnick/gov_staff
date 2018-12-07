@@ -3,8 +3,9 @@
 import pymysql
 
 
+# Person类
+# 单位驻地、单位编号、单位名称、所属部门、人员姓名、人员性别、编制类型、占用编制情况
 class Person:
-    # 单位驻地、单位编号、单位名称、所属部门、人员姓名、人员性别、编制类型、占用编制情况
     def __init__(self, dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk):
         self.dwzd = dwzd
         self.dwbh = dwbh
@@ -16,6 +17,9 @@ class Person:
         self.bzqk = bzqk
 
 
+# 根据信息生成人员实例
+# 参数：当前页面所含列信息、详细信息、单位驻地、单位编号、编制类型
+# 返回：人员实例
 def get_person(cols, info, dwzd, dwbh, bzlx):
     try:
         cols.index(['单位'])
@@ -70,6 +74,8 @@ def get_person(cols, info, dwzd, dwbh, bzlx):
     return Person(dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, zybzqk)
 
 
+# 保存人员信息到数据库
+# 参数：人员实例
 def save_person(person):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
@@ -85,6 +91,8 @@ def save_person(person):
     db.close()
 
 
+# 保存错误的人员信息到数据库
+# 参数：单位驻地、单位编号、单位名称、编制类型、访问网址
 def get_person_err(dwzd, dwbh, dwmc, bzlx, url):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
@@ -98,6 +106,8 @@ def get_person_err(dwzd, dwbh, dwmc, bzlx, url):
     db.close()
 
 
+# 输出人员提示信息
+# 参数：提示信息
 def person_text(info):
     file = open("C:\\人员提示信息.txt", "a", encoding='utf-8')
     file.write(info + "\n")

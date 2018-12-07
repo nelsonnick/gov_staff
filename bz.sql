@@ -13,7 +13,7 @@ File Encoding         : 65001
 Date: 2017-12-07 13:27:59
 */
 
-SET FOREIGN_KEY_CHECKS=0;
+SET FOREIGN_KEY_CHECKS=1;
 
 -- ----------------------------
 -- Table structure for department
@@ -28,12 +28,18 @@ CREATE TABLE `department` (
   `ldzs` varchar(255) DEFAULT NULL COMMENT '领导职数',
   `jb` varchar(255) DEFAULT NULL COMMENT '级别',
   `nsjg` varchar(999) DEFAULT NULL COMMENT '内设机构',
+  `zyzz` varchar(9999) DEFAULT NULL COMMENT '主要职责',
   `xz_plan_num` varchar(255) DEFAULT NULL COMMENT '行政编制数',
   `xz_real_num` varchar(255) DEFAULT NULL COMMENT '行政实际数',
+  `xz_lone_num` varchar(255) DEFAULT NULL COMMENT '行政单列数',
   `sy_plan_num` varchar(255) DEFAULT NULL COMMENT '事业编制数',
   `sy_real_num` varchar(255) DEFAULT NULL COMMENT '事业实际数',
+  `sy_lone_num` varchar(255) DEFAULT NULL COMMENT '事业单列数',
   `gq_plan_num` varchar(255) DEFAULT NULL COMMENT '工勤编制数',
   `gq_real_num` varchar(255) DEFAULT NULL COMMENT '工勤实际数',
+  `gq_lone_num` varchar(255) DEFAULT NULL COMMENT '工勤单列数',
+  `url` varchar(255) DEFAULT NULL COMMENT '访问网址',
+  `time` varchar(255) DEFAULT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------
@@ -74,6 +80,23 @@ CREATE TABLE `person_err` (
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `bzlx` varchar(255) DEFAULT NULL COMMENT '编制类型',
-  `url` varchar(255) DEFAULT NULL COMMENT '访问地址',
+  `url` varchar(255) DEFAULT NULL COMMENT '访问网址',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- ----------------------------
+-- Table structure for structure
+-- ----------------------------
+DROP TABLE IF EXISTS `structure`;
+CREATE TABLE `structure` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `city` varchar(255) CHARACTER SET utf8 NULL COMMENT '所属城市',
+  `district` varchar(255) CHARACTER SET utf8 NULL COMMENT '所属区县',
+  `category` varchar(255) CHARACTER SET utf8 NULL COMMENT '所属类别',
+  `type` varchar(255) CHARACTER SET utf8 NULL COMMENT '单位类别',
+  `dwbh` varchar(255) CHARACTER SET utf8 NULL COMMENT '单位编号',
+  `dwmc` varchar(255) CHARACTER SET utf8 NULL COMMENT '单位名称',
+  `superior` int(11) NULL COMMENT '上级部门',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `structure` ADD CONSTRAINT `superior` FOREIGN KEY () REFERENCES `structure` (`id`);
