@@ -7,12 +7,16 @@ import pymysql
 
 
 # Department类
-# 参数：单位驻地、单位编号、单位名称、其他名称、领导职数、级别、内设机构、主要职责、
+# 参数：所在城市、单位驻地、单位类别、单位类型、上级单位、单位编号、单位名称、其他名称、领导职数、级别、内设机构、主要职责、
 # 行政编制数、行政实际数、行政单列数、事业编制数、事业实际数、事业单列数、工勤编制数、工勤实际数、工勤单列数、访问网址、更新日期
 class Department:
-    def __init__(self, dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num, xz_lone_num,
-                 sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time):
+    def __init__(self, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
+                 xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time):
+        self.szcs = szcs
         self.dwzd = dwzd
+        self.dwlb = dwlb
+        self.dwlx = dwlx
+        self.sjdw = sjdw
         self.dwbh = dwbh
         self.dwmc = dwmc
         self.qtmc = qtmc
@@ -66,13 +70,13 @@ def down_department_dwbh_json(dwzd, url):
 
 
 # 根据信息生成单位实例
-# 参数：单位驻地、单位编号、单位名称、其他名称、领导职数、级别、内设机构、主要职责、
+# 参数：所在城市、单位驻地、单位类别、单位类型、上级单位、单位编号、单位名称、其他名称、领导职数、级别、内设机构、主要职责、
 # 行政编制数、行政实际数、行政单列数、事业编制数、事业实际数、事业单列数、工勤编制数、工勤实际数、工勤单列数、访问网址、更新日期
 # 返回：单位实例
-def get_department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num, xz_lone_num, sy_plan_num,
-                   sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time):
-    return Department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num, xz_lone_num, sy_plan_num,
-                      sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time)
+def get_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
+                 xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time):
+    return Department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
+                 xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time)
 
 
 # 保存单位信息到数据库
@@ -80,13 +84,14 @@ def get_department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz
 def save_department(department):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg,zyzz, xz_plan_num, xz_real_num, xz_lone_num," \
+    sql = "INSERT INTO department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg,zyzz, xz_plan_num, xz_real_num, xz_lone_num," \
           " sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time) \
-              VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
-          (department.dwzd, department.dwbh, department.dwmc, department.qtmc, department.ldzs, department.jb,
-           department.nsjg, department.zyzz, department.xz_plan_num, department.xz_real_num, department.xz_lone_num,
-           department.sy_plan_num, department.sy_real_num, department.sy_lone_num, department.gq_plan_num,
-           department.gq_real_num, department.gq_lone_num, department.url, department.time)
+              VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
+          (department.szcs, department.dwzd, department.dwlb, department.dwlx, department.sjdw, department.dwbh,
+           department.dwmc, department.qtmc, department.ldzs, department.jb, department.nsjg, department.zyzz,
+           department.xz_plan_num, department.xz_real_num, department.xz_lone_num, department.sy_plan_num,
+           department.sy_real_num, department.sy_lone_num, department.gq_plan_num, department.gq_real_num,
+           department.gq_lone_num, department.url, department.time)
     try:
         cursor.execute(sql)
         db.commit()
@@ -114,7 +119,7 @@ def get_department_err(dwzd, dwbh, dwmc, url):
 # 输出单位提示信息
 # 参数：提示信息
 def department_text(info):
-    file = open("C:\\单位提示信息.txt", "a", encoding='utf-8')
+    file = open("D:\\单位提示信息.txt", "a", encoding='utf-8')
     file.write(info + "\n")
     file.close()
     print(info)

@@ -17,16 +17,16 @@ from department import down_department_dwbh
 
 Dict = {
     '市直': 'http://jnbb.gov.cn/smzgs/',
-    '市中': 'http://sz.jnbb.gov.cn/smzgs/',
-    '历下': 'http://lx.jnbb.gov.cn/smzgs/',
-    '槐荫': 'http://hy.jnbb.gov.cn/smzgs/',
-    '天桥': 'http://tq.jnbb.gov.cn/smzgs/',
-    '历城': 'http://lc.jnbb.gov.cn/smzgs/',
-    '长清': 'http://cq.jnbb.gov.cn/smzgs/',
-    '章丘': 'http://zq.jnbb.gov.cn/smzgs/',
-    '济阳': 'http://jy.jnbb.gov.cn/smzgs/',
-    '商河': 'http://sh.jnbb.gov.cn/smzgs/',
-    '平阴': 'http://py.jnbb.gov.cn/smzgs/'
+    '市中区': 'http://sz.jnbb.gov.cn/smzgs/',
+    '历下区': 'http://lx.jnbb.gov.cn/smzgs/',
+    '槐荫区': 'http://hy.jnbb.gov.cn/smzgs/',
+    '天桥区': 'http://tq.jnbb.gov.cn/smzgs/',
+    '历城区': 'http://lc.jnbb.gov.cn/smzgs/',
+    '长清区': 'http://cq.jnbb.gov.cn/smzgs/',
+    '章丘区': 'http://zq.jnbb.gov.cn/smzgs/',
+    '济阳区': 'http://jy.jnbb.gov.cn/smzgs/',
+    '商河区': 'http://sh.jnbb.gov.cn/smzgs/',
+    '平阴区': 'http://py.jnbb.gov.cn/smzgs/'
         }
 
 
@@ -70,8 +70,8 @@ def down_person(dwzd, dwbh, dwmc, bzlx):
 
 
 # 下载单位信息
-# 参数：单位驻地、单位编号、单位名称
-def down_department(dwzd, dwbh, dwmc):
+# 参数：所在城市、单位驻地、单位类别、单位类型、上级部门、单位编号、单位名称
+def down_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc):
     xz_plan_num = xz_real_num = xz_lone_num = sy_plan_num = sy_real_num = sy_lone_num = gq_plan_num = gq_real_num = gq_lone_num = '0'
     url = Dict[dwzd] + "UnitDetails.aspx?unitId=" + dwbh
     time = BeautifulSoup(requests.get(Dict[dwzd]).text, "html.parser").find_all(id="SPAN1")[0].get_text()[9:]
@@ -109,11 +109,12 @@ def down_department(dwzd, dwbh, dwmc):
         zyzz = soup.find_all(id="lblMainDuty")[0].string.strip()
     else:
         # 获取单位的主要职责：大部分主要职责似乎是延迟加载，正常的方式抓取不到，需要借助浏览器
-        browser = webdriver.Chrome()
-        browser.get(url)
-        rt = browser.page_source
-        browser.close()
-        zyzz = BeautifulSoup(rt, "html.parser").find_all(id="lblMainDuty")[0].get_text()
+        # browser = webdriver.Chrome()
+        # browser.get(url)
+        # rt = browser.page_source
+        # browser.close()
+        # zyzz = BeautifulSoup(rt, "html.parser").find_all(id="lblMainDuty")[0].get_text()
+        zyzz = ''
     if soup.find_all('tr')[4].td.div.table is not None:
         number = soup.find_all('tr')[4].td.div.table.find_all('tr')
         for num in number:
@@ -168,8 +169,8 @@ def down_department(dwzd, dwbh, dwmc):
             bzlx = lx[5:len(lx)]
             down_person(dwzd, dwbh, dwmc, bzlx)
         save_department(
-            get_department(dwzd, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num, xz_lone_num,
-                           sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time))
+            get_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
+                 xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time))
     else:
         department_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + '--->无编制人员！')
 
@@ -187,6 +188,7 @@ def down_all():
             line = file.readline()
         file.close()
 
+
 # 按地区下载
 # 参数：单位驻地
 def down_one(dwzd):
@@ -200,10 +202,11 @@ def down_one(dwzd):
         line = file.readline()
     file.close()
 
+
 # 按地区下载单位结构
 # 参数：单位驻地
 # 返回值：结构字符串
-def down_structure_one(dwzd):
+def get_structure_str(dwzd):
     browser = webdriver.Chrome()
     browser.get(Dict[dwzd] + "TreeViewPage.aspx")
     rt = browser.page_source
@@ -259,53 +262,60 @@ def down_structure_one(dwzd):
 
 # 下载单位结构
 # 参数：单位驻地
-def down_structure_all():
+def down_structure():
     file = open("d:\\济南.txt", "a", encoding='UTF-8')
     for dwzd in Dict:
-        file.write(down_structure_one(dwzd))
+        file.write(get_structure_str(dwzd))
         print(dwzd + '：已下载完成！')
     file.close()
 
 
-def p():
-    city = district = category = type = dwbh = dwmc = up =  ''
+# 根据结构字符串下载全部数据
+# 生成的结构字符串需要修改，主要是济南市市直部门，前面要整体缩进一个tab
+# 把“济南市市直”更改成“市直”
+def down_by_structure():
+    szcs = dwzd = dwlb = dwlx = sjdw = dwbh = dwmc = ''
     tab = 0
     num = 1
     for line in open("d:\\济南.txt", "r", encoding='UTF-8'):
-
         if re.search(r'^\t[^\t].+?$\n', line):
-            city = line.replace('\t', '').replace('\n', '')
+            szcs = line.replace('\t', '').replace('\n', '')
             continue
         if re.search(r'^\t\t[^\t].+?$\n', line):
-            district = line.replace('\t', '').replace('\n', '')
+            dwzd = line.replace('\t', '').replace('\n', '')
             continue
         if re.search(r'^\t\t\t[^\t].+?$\n', line) or re.search(r'^\t\t\t[^\t]$\n', line):
-            category = line.replace('\t', '').replace('\n', '')
+            dwlb = line.replace('\t', '').replace('\n', '')
             continue
         if re.search(r'^\t\t\t\t行政机关$\n', line):
-            type = '行政'
+            dwlx = '行政'
             continue
         if re.search(r'^\t\t\t\t直属事业单位$\n', line):
-            type = '事业'
+            dwlx = '事业'
             continue
         if re.search(r'^\t\t\t\t\t\t下设机构$\n', line):
-            type = '行政'
+            dwlx = '行政'
             continue
         if re.search(r'^\t\t\t\t\t\t事业单位$\n', line):
-            type = '事业'
+            dwlx = '事业'
             continue
         if re.search(r'^\t\t\t街道办事处$\n', line):
-            type = '行政'
+            dwlx = '行政'
             continue
         if line.count('\t') < tab:
-            type = '行政'
-        if (category == '街道办事处' or category == '乡' or category == '镇') and re.search(r'^\t\t\t\t\t[^\t].+?$\n', line):
-            type = '事业'
+            dwlx = '行政'
+        if (dwlb == '街道办事处' or dwlb == '乡' or dwlb == '镇') and re.search(r'^\t\t\t\t\t[^\t].+?$\n', line):
+            dwlx = '事业'
         tab = line.count('\t')
         row = line.replace('\t', '').replace('\n', '')
         dwbh = row.split("-")[0]
         dwmc = row.split("-")[1]
-        print(city + '-' + district + '-' + category + '-' + type + '-' + dwbh + '-' + dwmc)
+        if len(dwbh) == 18 or len(dwbh) == 15:
+            sjdw = dwbh[:-3]
+        else:
+            sjdw = ''
+        down_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         num = num + 1
 
 
+down_by_structure()

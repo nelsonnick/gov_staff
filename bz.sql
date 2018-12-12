@@ -21,7 +21,11 @@ SET FOREIGN_KEY_CHECKS=1;
 DROP TABLE IF EXISTS `department`;
 CREATE TABLE `department` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `szcs` varchar(255) DEFAULT NULL COMMENT '所在城市',
   `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
+  `dwlb` varchar(255) DEFAULT NULL COMMENT '单位类别',
+  `dwlx` varchar(255) DEFAULT NULL COMMENT '单位类型',
+  `sjdw` varchar(255) DEFAULT NULL COMMENT '上级单位',
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `qtmc` varchar(255) DEFAULT NULL COMMENT '其他名称',
@@ -83,20 +87,3 @@ CREATE TABLE `person_err` (
   `url` varchar(255) DEFAULT NULL COMMENT '访问网址',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
--- ----------------------------
--- Table structure for structure
--- ----------------------------
-DROP TABLE IF EXISTS `structure`;
-CREATE TABLE `structure` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `city` varchar(255) CHARACTER SET utf8 NULL COMMENT '所属城市',
-  `district` varchar(255) CHARACTER SET utf8 NULL COMMENT '所属区县',
-  `category` varchar(255) CHARACTER SET utf8 NULL COMMENT '所属类别',
-  `type` varchar(255) CHARACTER SET utf8 NULL COMMENT '单位类别',
-  `dwbh` varchar(255) CHARACTER SET utf8 NULL COMMENT '单位编号',
-  `dwmc` varchar(255) CHARACTER SET utf8 NULL COMMENT '单位名称',
-  `superior` int(11) NULL COMMENT '上级部门',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `structure` ADD CONSTRAINT `superior` FOREIGN KEY () REFERENCES `structure` (`id`);
