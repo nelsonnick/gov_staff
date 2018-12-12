@@ -270,98 +270,198 @@ def down_structure_all():
 
 
 city = district = category = type = dwbh = dwmc = ''
-num = 0
+tab = 0
+num = 1
 for line in open("d:\\济南.txt", "r", encoding='UTF-8'):
-    if line == '\t济南市\n':
-        city = '济南市'
-        continue
-    if line == '\t\t市直\n':
-        district = '市直'
-        continue
-    if line == '\t\t市中区\n':
-        district = '市中区'
-        continue
-    if line == '\t\t历下区\n':
-        district = '历下区'
-        continue
-    if line == '\t\t槐荫区\n':
-        district = '槐荫区'
-        continue
-    if line == '\t\t天桥区\n':
-        district = '天桥区'
-        continue
-    if line == '\t\t历城区\n':
-        district = '历城区'
-        continue
-    if line == '\t\t长清区\n':
-        district = '长清区'
-        continue
-    if line == '\t\t章丘区\n':
-        district = '章丘区'
-        continue
-    if line == '\t\t济阳县\n':
-        district = '济阳县'
-        continue
-    if line == '\t\t商河县\n':
-        district = '商河县'
-        continue
-    if line == '\t\t平阴县\n':
-        district = '平阴县'
-        continue
-    if line == '\t\t\t党委\n':
-        category = '党委'
-        continue
-    if line == '\t\t\t人大\n':
-        category = '人大'
-        continue
-    if line == '\t\t\t政府\n':
-        category = '政府'
-        continue
-    if line == '\t\t\t政协\n':
-        category = '政协'
-        continue
-    if line == '\t\t\t民主党派\n':
-        category = '民主党派'
-        continue
-    if line == '\t\t\t群众团体\n':
-        category = '群众团体'
-        continue
-    if line == '\t\t\t法院\n':
-        category = '法院'
-        continue
-    if line == '\t\t\t检察院\n':
-        category = '检察院'
-        continue
-    if line == '\t\t\t经济实体\n':
-        category = '经济实体'
-        continue
-    if line == '\t\t\t街道办事处\n':
-        category = '街道办事处'
-        continue
-    if line == '\t\t\t乡\n':
-        category = '乡'
-        continue
-    if line == '\t\t\t镇\n':
-        category = '镇'
-        continue
-    if line == '\t\t\t\t行政机关\n':
-        type = '行政机关'
-        continue
-    if line == '\t\t\t\t直属事业单位\n':
-        type = '事业单位'
-        continue
-    if line == '\t\t\t\t\t\t下设机构\n':
-        type = '行政机关'
-        continue
-    if line == '\t\t\t\t\t\t事业单位\n':
-        type = '事业单位'
-        continue
-    if line.count('\t') > num:
-        num = line.count('\t')
-    else:
-        num = 0
 
-    co = line.replace('\t', '').replace('\n', '')
-    dwbh = co.split("-")[0]
-    dwmc = co.split("-")[1]
+    if re.search(r'^\t[^\t].+?$\n', line):
+        city = line.replace('\t', '').replace('\n', '')
+        continue
+    if re.search(r'^\t\t[^\t].+?$\n', line):
+        district = line.replace('\t', '').replace('\n', '')
+        continue
+    if re.search(r'^\t\t\t[^\t].+?$\n', line) or re.search(r'^\t\t\t[^\t]$\n', line):
+        category = line.replace('\t', '').replace('\n', '')
+        continue
+    if re.search(r'^\t\t\t\t行政机关$\n', line):
+        type = '行政'
+        continue
+    if re.search(r'^\t\t\t\t直属事业单位$\n', line):
+        type = '事业'
+        continue
+    if category == '街道' and re.search(r'^\t\t\t\t[^\t]$\n', line):
+
+        type = '行政'
+        continue
+    if re.search(r'^\t\t\t\t\t\t下设机构$\n', line):
+        type = '行政'
+        continue
+    if re.search(r'^\t\t\t\t\t\t事业单位$\n', line):
+        type = '事业'
+        continue
+    if line.count('\t') < tab \
+            and re.search(r'^\t[^\t].+?$\n', line) \
+            and re.search(r'^\t\t[^\t].+?$\n', line) \
+            and (re.search(r'^\t\t\t[^\t].+?$\n', line) or re.search(r'^\t\t\t[^\t]$\n', line)) \
+            and re.search(r'^\t\t\t\t行政机关$\n', line) \
+            and re.search(r'^\t\t\t\t直属事业单位$\n', line) \
+            and re.search(r'^\t\t\t\t\t\t下设机构$\n', line) \
+            and re.search(r'^\t\t\t\t\t\t事业单位$\n', line):
+        type = '行政'
+        tab = line.count('\t')
+        continue
+    tab = line.count('\t')
+    row = line.replace('\t', '').replace('\n', '')
+    dwbh = row.split("-")[0]
+    dwmc = row.split("-")[1]
     print(city + '-' + district + '-' + category + '-' + type + '-' + dwbh + '-' + dwmc)
+
+
+    num = num + 1
+# for line in open("d:\\济南.txt", "r", encoding='UTF-8'):
+#     if line.find("济南市") < 0 \
+#             or line.find("市直") < 0 \
+#             or line.find("市中区") < 0 \
+#             or line.find("历下区") < 0 \
+#             or line.find("槐荫区") < 0 \
+#             or line.find("天桥区") < 0 \
+#             or line.find("历城区") < 0 \
+#             or line.find("长清区") < 0 \
+#             or line.find("章丘区") < 0 \
+#             or line.find("济阳县") < 0 \
+#             or line.find("商河县") < 0 \
+#             or line.find("平阴县") < 0 \
+#             or line.find("党委") < 0 \
+#             or line.find("人大") < 0 \
+#             or line.find("政府") < 0 \
+#             or line.find("政协") < 0 \
+#             or line.find("民主党派") < 0 \
+#             or line.find("群众团体") < 0 \
+#             or line.find("法院") < 0 \
+#             or line.find("检察院") < 0 \
+#             or line.find("经济实体") < 0 \
+#             or line.find("街道办事处") < 0 \
+#             or line.find("镇") < 0 \
+#             or line.find("行政机关") < 0 \
+#             or line.find("直属事业单位") < 0 \
+#             or line.find("下设机构") < 0 \
+#             or line.find("事业单位") < 0:
+#
+#         if line.count('\t') > tab:
+#             tab = line.count('\t')
+#             up = dwbh
+#             row = line.replace('\t', '').replace('\n', '')
+#             dwbh = row.split("-")[0]
+#             dwmc = row.split("-")[1]
+#
+#             pass
+#         elif line.count('\t') == tab:
+#             up = up
+#             row = line.replace('\t', '').replace('\n', '')
+#             dwbh = row.split("-")[0]
+#             dwmc = row.split("-")[1]
+#
+#             pass
+#         else:
+#             tab = line.count('\t')
+#             pass
+#
+#
+#
+#
+#
+#
+#
+#
+#     if line == '\t济南市\n':
+#         city = '济南市'
+#         continue
+#     if line == '\t\t市直\n':
+#         district = '市直'
+#         continue
+#     if line == '\t\t市中区\n':
+#         district = '市中区'
+#         continue
+#     if line == '\t\t历下区\n':
+#         district = '历下区'
+#         continue
+#     if line == '\t\t槐荫区\n':
+#         district = '槐荫区'
+#         continue
+#     if line == '\t\t天桥区\n':
+#         district = '天桥区'
+#         continue
+#     if line == '\t\t历城区\n':
+#         district = '历城区'
+#         continue
+#     if line == '\t\t长清区\n':
+#         district = '长清区'
+#         continue
+#     if line == '\t\t章丘区\n':
+#         district = '章丘区'
+#         continue
+#     if line == '\t\t济阳县\n':
+#         district = '济阳县'
+#         continue
+#     if line == '\t\t商河县\n':
+#         district = '商河县'
+#         continue
+#     if line == '\t\t平阴县\n':
+#         district = '平阴县'
+#         continue
+#     if line == '\t\t\t党委\n':
+#         category = '党委'
+#         continue
+#     if line == '\t\t\t人大\n':
+#         category = '人大'
+#         continue
+#     if line == '\t\t\t政府\n':
+#         category = '政府'
+#         continue
+#     if line == '\t\t\t政协\n':
+#         category = '政协'
+#         continue
+#     if line == '\t\t\t民主党派\n':
+#         category = '民主党派'
+#         continue
+#     if line == '\t\t\t群众团体\n':
+#         category = '群众团体'
+#         continue
+#     if line == '\t\t\t法院\n':
+#         category = '法院'
+#         continue
+#     if line == '\t\t\t检察院\n':
+#         category = '检察院'
+#         continue
+#     if line == '\t\t\t经济实体\n':
+#         category = '经济实体'
+#         continue
+#     if line == '\t\t\t街道办事处\n':
+#         category = '街道办事处'
+#         continue
+#     if line == '\t\t\t乡\n':
+#         category = '乡'
+#         continue
+#     if line == '\t\t\t镇\n':
+#         category = '镇'
+#         continue
+#     if line == '\t\t\t\t行政机关\n':
+#         type = '行政机关'
+#         continue
+#     if line == '\t\t\t\t直属事业单位\n':
+#         type = '事业单位'
+#         continue
+#     if line == '\t\t\t\t\t\t下设机构\n':
+#         type = '行政机关'
+#         continue
+#     if line == '\t\t\t\t\t\t事业单位\n':
+#         type = '事业单位'
+#         continue
+#     if line.count('\t') >= tab:
+#         tab = line.count('\t')
+#         # type不变
+#         up = dwmc
+#     else:
+#         tab = 0
+#
+
