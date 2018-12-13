@@ -52,7 +52,6 @@ CREATE TABLE `department` (
 DROP TABLE IF EXISTS `department_err`;
 CREATE TABLE `department_err` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `url` varchar(255) DEFAULT NULL COMMENT '访问网址',
@@ -64,7 +63,6 @@ CREATE TABLE `department_err` (
 DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `ssbm` varchar(255) DEFAULT NULL COMMENT '所属部门',
@@ -80,7 +78,6 @@ CREATE TABLE `person` (
 DROP TABLE IF EXISTS `person_err`;
 CREATE TABLE `person_err` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `bzlx` varchar(255) DEFAULT NULL COMMENT '编制类型',

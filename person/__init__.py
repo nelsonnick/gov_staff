@@ -4,10 +4,9 @@ import pymysql
 
 
 # Person类
-# 单位驻地、单位编号、单位名称、所属部门、人员姓名、人员性别、编制类型、占用编制情况
+# 单位编号、单位名称、所属部门、人员姓名、人员性别、编制类型、占用编制情况
 class Person:
-    def __init__(self, dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk):
-        self.dwzd = dwzd
+    def __init__(self, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk):
         self.dwbh = dwbh
         self.dwmc = dwmc
         self.ssbm = ssbm
@@ -20,7 +19,7 @@ class Person:
 # 根据信息生成人员实例
 # 参数：当前页面所含列信息、详细信息、单位驻地、单位编号、编制类型
 # 返回：人员实例
-def get_person(cols, info, dwzd, dwbh, bzlx):
+def get_person(cols, info, dwbh, bzlx):
     try:
         cols.index(['单位'])
     except ValueError:
@@ -71,7 +70,7 @@ def get_person(cols, info, dwzd, dwbh, bzlx):
         zybzqk = info[zybzqk_num][4:len(info[zybzqk_num]) - 5]
     else:
         zybzqk = ''
-    return Person(dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, zybzqk)
+    return Person(dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, zybzqk)
 
 
 # 保存人员信息到数据库
@@ -79,29 +78,29 @@ def get_person(cols, info, dwzd, dwbh, bzlx):
 def save_person(person):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO person(dwzd, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk) \
-                                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
-          (person.dwzd, person.dwbh, person.dwmc, person.ssbm, person.ryxm, person.ryxb, person.bzlx, person.bzqk)
+    sql = "INSERT INTO person(dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk) \
+                                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
+          (person.dwbh, person.dwmc, person.ssbm, person.ryxm, person.ryxb, person.bzlx, person.bzqk)
     try:
         cursor.execute(sql)
         db.commit()
     except:
-        person_text(person.dwzd + ':' + person.dwbh + '-' + person.ryxm + '-' + person.bzlx + '--->保存错误！')
+        person_text(person.dwbh + '-' + person.dwmc + '-' + person.ryxm + '-' + person.bzlx + '--->保存错误！')
         db.rollback()
     db.close()
 
 
 # 保存错误的人员信息到数据库
 # 参数：单位驻地、单位编号、单位名称、编制类型、访问网址
-def get_person_err(dwzd, dwbh, dwmc, bzlx, url):
+def get_person_err(dwbh, dwmc, bzlx, url):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO person_err(dwzd, dwbh, dwmc, bzlx, url)VALUES ('%s', '%s', '%s', '%s', '%s')" % (dwzd, dwbh, dwmc, bzlx, url)
+    sql = "INSERT INTO person_err(dwbh, dwmc, bzlx, url)VALUES ('%s', '%s', '%s', '%s')" % (dwbh, dwmc, bzlx, url)
     try:
         cursor.execute(sql)
         db.commit()
     except:
-        person_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '-' + url + '--->打开人员信息错误！')
+        person_text(dwbh + '-' + dwmc + '-' + bzlx + '-' + url + '--->打开人员信息错误！')
         db.rollback()
     db.close()
 

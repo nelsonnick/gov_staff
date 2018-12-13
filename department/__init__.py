@@ -102,16 +102,16 @@ def save_department(department):
 
 
 # 保存错误的单位信息到数据库
-# 参数：单位驻地、单位编号、单位名称、访问网址
-def get_department_err(dwzd, dwbh, dwmc, url):
+# 参数：单位编号、单位名称、访问网址
+def get_department_err(dwbh, dwmc, url):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO department_err(dwzd, dwbh, dwmc, url)VALUES ('%s', '%s', '%s', '%s')" % (dwzd, dwbh, dwmc, url)
+    sql = "INSERT INTO department_err(dwbh, dwmc, url)VALUES ('%s', '%s', '%s')" % (dwbh, dwmc, url)
     try:
         cursor.execute(sql)
         db.commit()
     except:
-        department_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + url + '--->打开单位信息错误！')
+        department_text(dwbh + '-' + dwmc + '-' + url + '--->打开单位信息错误！')
         db.rollback()
     db.close()
 

@@ -37,7 +37,7 @@ def down_person(dwzd, dwbh, dwmc, bzlx):
     try:
         rt = requests.get(url, timeout=1000)
     except:
-        get_person_err(dwzd, dwbh, dwmc, bzlx, url)
+        get_person_err(dwbh, dwmc, bzlx, url)
         return
     key = rt.text
     titles = re.findall(r'<th.+?</th>', key)
@@ -49,24 +49,24 @@ def down_person(dwzd, dwbh, dwmc, bzlx):
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person(cols, information, dwzd, dwbh, bzlx))
-        person_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
+            save_person(get_person(cols, information, dwbh, bzlx))
+        person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 4:
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person(cols, information, dwzd, dwbh, bzlx))
-        person_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
+            save_person(get_person(cols, information, dwbh, bzlx))
+        person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 5:
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person(cols, information, dwzd, dwbh, bzlx))
-        person_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
+            save_person(get_person(cols, information, dwbh, bzlx))
+        person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 0:
-        person_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->无人员信息！')
+        person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->无人员信息！')
     else:
-        person_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + bzlx + '--->无法识别！')
+        person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->无法识别！')
 
 
 # 下载单位信息
@@ -78,7 +78,7 @@ def down_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc):
     try:
         rt = requests.get(url, timeout=1000)
     except:
-        get_department_err(dwzd, dwbh, dwmc, url)
+        get_department_err(dwbh, dwmc, url)
         return
     soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
     if soup.find_all('tr')[0].find_all('td')[1].span.b.font.string is not None:
@@ -318,4 +318,5 @@ def down_by_structure():
         num = num + 1
 
 
+# down_structure()
 down_by_structure()
