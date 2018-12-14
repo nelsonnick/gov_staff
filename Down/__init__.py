@@ -3,6 +3,7 @@
 import requests
 import re
 import json
+import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from person import get_person
@@ -222,11 +223,12 @@ def get_structure_str_html(dict_list, dwzd):
 # 参数：单位列表、文件名称
 # 济南、青岛、淄博、枣庄、东营、潍坊、济宁、泰安、威海、滨州、德州、聊城、临沂、菏泽、莱芜
 def down_structure_html(dict_list, filename):
-    file = open("d:\\" + filename + ".txt", "a", encoding='UTF-8')
+    file = open("d:\\" + filename + "-before.txt", "a", encoding='UTF-8')
     for dwzd in dict_list:
         file.write(get_structure_str_html(dict_list, dwzd))
         print(dwzd + '：已下载完成！')
     file.close()
+    change_text(filename)
 
 
 # 下载单位结构文件---根据json字符串解析
@@ -245,7 +247,7 @@ def down_structure_json(dict_list, dwzd):
         .replace(',"icon":"image/Department/13.png"', '').replace(',"icon":"image/Department/14.png"', '').replace(',"icon":"image/Department/15.png"', '') \
         .replace(',"rn":"0"', '').replace(',"rn":"1"', '').replace(',"rn":"2"', '').replace('var zNodes = ', '')[1:-3]
     dict = json.loads(json_data)
-    file = open("d:\\" + dwzd + ".txt", "a", encoding='utf-8')
+    file = open("d:\\" + dwzd + "-before.txt", "a", encoding='utf-8')
     file.write("\t" + dict['id'] + "-" + dict['name'])
     for a in dict['children']:
         file.write("\n\t\t" + a['id'] + "-" + a['name'])
@@ -277,7 +279,38 @@ def down_structure_json(dict_list, dwzd):
                                                                             for j in i['children']:
                                                                                 file.write("\n\t\t\t\t\t\t\t\t\t\t\t" + j['id'] + "-" + j['name'])
     print(dwzd + '：已下载完成！')
+    change_text(dwzd)
     file.close()
+
+
+# 转换文本
+def change_text(filename):
+    before = open("d:\\" + filename + "-before.txt", "r", encoding='UTF-8')
+    line = before.readline()
+    if line.find('-') > 0:
+        after = open("d:\\" + filename + ".txt", "a", encoding='UTF-8')
+        while line:
+            if line.count('\t') == 1:
+                after.write('\t' + line.split('-')[1])
+            elif line.count('\t') == 2:
+                after.write('\t\t' + line.split('-')[1])
+            else:
+                if line.split('-')[1] == '党委\n'or line.split('-')[1] == '人大\n' or line.split('-')[1] == '政府\n' or line.split('-')[1] == '政协\n' \
+                    or line.split('-')[1] == '民主党派\n' or line.split('-')[1] == '群众团体\n' or line.split('-')[1] == '法院\n' or line.split('-')[1] == '检察院\n' \
+                    or line.split('-')[1] == '经济实体\n' or line.split('-')[1] == '其他\n' or line.split('-')[1] == '街道办事处\n' or line.split('-')[1] == '乡\n' \
+                    or line.split('-')[1] == '镇\n' or line.split('-')[1] == '行政机关\n' or line.split('-')[1] == '直属事业单位\n' or line.split('-')[1] == '下设机构\n' \
+                    or line.split('-')[1] == '事业单位\n':
+                    for index in range(line.count('\t')):
+                        after.write('\t')
+                    after.write(line.split('-')[1])
+                else:
+                    after.write(line)
+            line = before.readline()
+        after.close()
+        before.close()
+    else:
+        before.close()
+        os.rename("d:\\" + filename + "-before.txt", "d:\\" + filename + ".txt")
 
 
 # 根据结构字符串下载全部数据
