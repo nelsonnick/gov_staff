@@ -55,7 +55,7 @@ def get_person(cols, info, dwbh, bzlx):
     else:
         dwmc = ''
     if xm_num != '':
-        ryxm = info[xm_num][4:len(info[xm_num]) - 5]
+        ryxm = info[xm_num][4:len(info[xm_num]) - 5].replace(" ", "")
     else:
         ryxm = ''
     if xb_num != '':
