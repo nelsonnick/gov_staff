@@ -45,7 +45,7 @@ def down_department_dwbh(dwzd, url):
     t = browser.page_source
     browser.close()
     department_string = re.compile(r'ipt:f\(.+?\);\"').findall(t)
-    file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
+    file = open("d:\\" + dwzd + ".txt", "a", encoding='utf-8')
     for d in department_string:
         dwbh = d.split('\'')[1]
         dwmc = urllib.parse.unquote(d.split('\'')[3])
@@ -61,7 +61,7 @@ def down_department_dwbh_json(dwzd, url):
     t = browser.page_source
     browser.close()
     department_string = re.compile(r'\"name\":\".+?\",\"id\":\"\d{0,}\"').findall(t)
-    file = open("C:\\" + dwzd + ".txt", "a", encoding='utf-8')
+    file = open("d:\\" + dwzd + ".txt", "a", encoding='utf-8')
     for d in department_string:
         dwbh = d.split('\"')[7]
         dwmc = urllib.parse.unquote(d.split('\"')[3])
@@ -119,7 +119,7 @@ def get_department_err(dwbh, dwmc, url):
 # 输出单位提示信息
 # 参数：提示信息
 def department_text(info):
-    file = open("D:\\单位提示信息.txt", "a", encoding='utf-8')
+    file = open("d:\\单位提示信息.txt", "a", encoding='utf-8')
     file.write(info + "\n")
     file.close()
     print(info)

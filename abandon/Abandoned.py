@@ -155,3 +155,33 @@ def down_department2(dwbh, dwzd):
     db.close()
     # print(dwzd + ':' + dwbh + '-' + dwmc + '下载完成！')
 
+
+
+# 全部下载（通过页面分析，直接下载）
+# 参数：单位列表、单位驻地
+def down_all(dict_list):
+    for dwzd in dict_list:
+        down_department_dwbh(dwzd, dict_list[dwzd])
+        file = open("d:\\" + dwzd + ".txt", "r", encoding='UTF-8')
+        line = file.readline()
+        while line:
+            dwbh = line.split('\t')[0]
+            dwmc = line.split('\t')[1]
+            down_department_details(dict_list, dwzd, dwbh, dwmc)
+            line = file.readline()
+        file.close()
+
+
+# 按地区下载（通过页面分析，直接下载）
+# 参数：单位列表、单位驻地
+def down_one(dict_list, dwzd):
+    down_department_dwbh(dwzd, dict_list[dwzd])
+    file = open("d:\\" + dwzd + ".txt", "r", encoding='UTF-8')
+    line = file.readline()
+    while line:
+        dwbh = line.split('\t')[0]
+        dwmc = line.split('\t')[1]
+        down_department_details(dict_list, dwzd, dwbh, dwmc)
+        line = file.readline()
+    file.close()
+

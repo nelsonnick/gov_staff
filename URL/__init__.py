@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-from JiNan import down_structure
+
 # 济南
 JiNan = {
     '市直': 'http://jnbb.gov.cn/smzgs/',

@@ -108,7 +108,7 @@ def get_person_err(dwbh, dwmc, bzlx, url):
 # 输出人员提示信息
 # 参数：提示信息
 def person_text(info):
-    file = open("D:\\人员提示信息.txt", "a", encoding='utf-8')
+    file = open("d:\\人员提示信息.txt", "a", encoding='utf-8')
     file.write(info + "\n")
     file.close()
     print(info)

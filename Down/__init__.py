@@ -2,8 +2,9 @@
 # -*- coding: UTF-8 -*-
 import requests
 import re
-from selenium import webdriver
+import json
 from bs4 import BeautifulSoup
+from selenium import webdriver
 from person import get_person
 from person import save_person
 from person import get_person_err
@@ -12,12 +13,11 @@ from department import get_department_err
 from department import department_text
 from department import save_department
 from department import get_department
-from department import down_department_dwbh
 
 
 # 下载人员信息
 # 参数：单位驻地、单位编号、单位名称、编制类型
-def down_person(dict_list, dwzd, dwbh, dwmc, bzlx):
+def down_person_list(dict_list, dwzd, dwbh, dwmc, bzlx):
     url = dict_list[dwzd] + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx
     try:
         rt = requests.get(url, timeout=1000)
@@ -56,7 +56,7 @@ def down_person(dict_list, dwzd, dwbh, dwmc, bzlx):
 
 # 下载单位信息
 # 参数：所在城市、单位驻地、单位类别、单位类型、上级部门、单位编号、单位名称
-def down_department(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc):
+def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc):
     xz_plan_num = xz_real_num = xz_lone_num = sy_plan_num = sy_real_num = sy_lone_num = gq_plan_num = gq_real_num = gq_lone_num = '0'
     url = dict_list[dwzd] + "UnitDetails.aspx?unitId=" + dwbh
     time = BeautifulSoup(requests.get(dict_list[dwzd]).text, "html.parser").find_all(id="SPAN1")[0].get_text()[9:]
@@ -152,7 +152,7 @@ def down_department(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc):
                 pass
             lx = re.search(re.compile(r'BZLX=.+?$'), num.find_all('td')[3].a['href']).group(0)
             bzlx = lx[5:len(lx)]
-            down_person(dict_list, dwzd, dwbh, dwmc, bzlx)
+            down_person_list(dict_list, dwzd, dwbh, dwmc, bzlx)
         save_department(
             get_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
                  xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time))
@@ -160,44 +160,16 @@ def down_department(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc):
         department_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + '--->无编制人员！')
 
 
-# 全部下载
-def down_all(dict_list):
-    for dwzd in dict_list:
-        down_department_dwbh(dwzd, dict_list[dwzd])
-        file = open("c:\\" + dwzd + ".txt", "r", encoding='UTF-8')
-        line = file.readline()
-        while line:
-            dwbh = line.split('\t')[0]
-            dwmc = line.split('\t')[1]
-            down_department(dict_list, dwzd, dwbh, dwmc)
-            line = file.readline()
-        file.close()
-
-
-# 按地区下载
-# 参数：单位驻地
-def down_one(dict_list, dwzd):
-    down_department_dwbh(dwzd, dict_list[dwzd])
-    file = open("c:\\" + dwzd + ".txt", "r", encoding='UTF-8')
-    line = file.readline()
-    while line:
-        dwbh = line.split('\t')[0]
-        dwmc = line.split('\t')[1]
-        down_department(dict_list, dwzd, dwbh, dwmc)
-        line = file.readline()
-    file.close()
-
-
-# 按地区下载单位结构
-# 参数：单位驻地
+# 按地区获取结构字符串---根据html文件解析
+# 参数：单位列表、单位驻地
 # 返回值：结构字符串
-def get_structure_str(dict_list, dwzd):
+# 济南、青岛、淄博、枣庄、东营、潍坊、济宁、泰安、威海、滨州、德州、聊城、临沂、菏泽、莱芜
+def get_structure_str_html(dict_list, dwzd):
     browser = webdriver.Chrome()
     browser.get(dict_list[dwzd] + "TreeViewPage.aspx")
     rt = browser.page_source
     browser.close()
     soup = BeautifulSoup(rt, "html.parser").body.form.table.tbody.tr.td.div
-    print(soup)
     del soup['id']
     del soup['style']
     del soup['class']
@@ -246,20 +218,73 @@ def get_structure_str(dict_list, dwzd):
     return t
 
 
-# 下载单位结构
-# 参数：文件名称
-def down_structure(dict_list, filename):
+# 下载单位结构文件---根据html文件解析
+# 参数：单位列表、文件名称
+# 济南、青岛、淄博、枣庄、东营、潍坊、济宁、泰安、威海、滨州、德州、聊城、临沂、菏泽、莱芜
+def down_structure_html(dict_list, filename):
     file = open("d:\\" + filename + ".txt", "a", encoding='UTF-8')
     for dwzd in dict_list:
-        file.write(get_structure_str(dict_list, dwzd))
+        file.write(get_structure_str_html(dict_list, dwzd))
         print(dwzd + '：已下载完成！')
+    file.close()
+
+
+# 下载单位结构文件---根据json字符串解析
+# 参数：单位列表、单位驻地、文件名称
+# 烟台、日照、省级
+def down_structure_json(dict_list, dwzd):
+    browser = webdriver.Chrome()
+    browser.get(dict_list[dwzd] + "TreeViewPage.aspx")
+    rt = browser.page_source
+    browser.close()
+    soup = BeautifulSoup(rt, "html.parser")
+    json_data = re.findall(r'var zNodes =.+?;\n', soup.text)[0].replace(',"icon":"image/Department/1.png"', '').replace(',"icon":"image/Department/2.png"', '').replace(',"icon":"image/Department/3.png"', '')\
+        .replace(',"icon":"image/Department/4.png"', '').replace(',"icon":"image/Department/5.png"', '').replace(',"icon":"image/Department/6.png"', '') \
+        .replace(',"icon":"image/Department/7.png"', '').replace(',"icon":"image/Department/8.png"', '').replace(',"icon":"image/Department/9.png"', '') \
+        .replace(',"icon":"image/Department/10.png"', '').replace(',"icon":"image/Department/11.png"', '').replace(',"icon":"image/Department/12.png"', '') \
+        .replace(',"icon":"image/Department/13.png"', '').replace(',"icon":"image/Department/14.png"', '').replace(',"icon":"image/Department/15.png"', '') \
+        .replace(',"rn":"0"', '').replace(',"rn":"1"', '').replace(',"rn":"2"', '').replace('var zNodes = ', '')[1:-3]
+    dict = json.loads(json_data)
+    file = open("d:\\" + dwzd + ".txt", "a", encoding='utf-8')
+    file.write("\t" + dict['id'] + "-" + dict['name'])
+    for a in dict['children']:
+        file.write("\n\t\t" + a['id'] + "-" + a['name'])
+        if 'children' in a:
+            for b in a['children']:
+                file.write("\n\t\t\t" + b['id'] + "-" + b['name'])
+                if 'children' in b:
+                    for c in b['children']:
+                        file.write("\n\t\t\t\t" + c['id'] + "-" + c['name'])
+                        if 'children' in c:
+                            for d in c['children']:
+                                file.write("\n\t\t\t\t\t" + d['id'] + "-" + d['name'])
+                                if 'children' in d:
+                                    for e in d['children']:
+                                        file.write("\n\t\t\t\t\t\t" + e['id'] + "-" + e['name'])
+                                        if 'children' in e:
+                                            for f in e['children']:
+                                                file.write("\n\t\t\t\t\t\t\t" + f['id'] + "-" + f['name'])
+                                                if 'children' in f:
+                                                    for g in f['children']:
+                                                        file.write("\n\t\t\t\t\t\t\t\t" + g['id'] + "-" + g['name'])
+                                                        if 'children' in g:
+                                                            for h in g['children']:
+                                                                file.write("\n\t\t\t\t\t\t\t\t\t" + h['id'] + "-" + h['name'])
+                                                                if 'children' in h:
+                                                                    for i in h['children']:
+                                                                        file.write("\n\t\t\t\t\t\t\t\t\t\t" + i['id'] + "-" + i['name'])
+                                                                        if 'children' in i:
+                                                                            for j in i['children']:
+                                                                                file.write("\n\t\t\t\t\t\t\t\t\t\t\t" + j['id'] + "-" + j['name'])
+    print(dwzd + '：已下载完成！')
     file.close()
 
 
 # 根据结构字符串下载全部数据
 # 生成的结构字符串需要修改，主要是济南市市直部门，前面要整体缩进一个tab
 # 把“济南市市直”更改成“市直”
-def down_by_structure(dict_list, filename):
+# 省直机关不能用这个！！！！！
+def down(dict_list, filename):
     szcs = dwzd = dwlb = dwlx = sjdw = dwbh = dwmc = ''
     tab = 0
     num = 1
@@ -300,9 +325,5 @@ def down_by_structure(dict_list, filename):
             sjdw = dwbh[:-3]
         else:
             sjdw = ''
-        down_department(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
+        down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         num = num + 1
-
-
-# down_structure(JiNan, "济南")
-# down_by_structure(JiNan, "济南")
