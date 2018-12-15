@@ -360,3 +360,42 @@ def down(dict_list, filename):
             sjdw = ''
         down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         num = num + 1
+
+
+# 根据结构字符串下载全部数据----省直机关
+def down_sz(dict_list, filename):
+    szcs = dwzd = dwlb = dwlx = sjdw = dwbh = dwmc = ''
+    tab = 0
+    num = 1
+    dwzd = '省直'
+    for line in open("d:\\" + filename + ".txt", "r", encoding='UTF-8'):
+        if re.search(r'^\t[^\t].+?$\n', line):
+            szcs = line.replace('\t', '').replace('\n', '')
+            continue
+        if re.search(r'^\t\t[^\t].+?$\n', line) or re.search(r'^\t\t[^\t]$\n', line):
+            dwlb = line.replace('\t', '').replace('\n', '')
+            continue
+        if re.search(r'^\t\t\t行政机关$\n', line):
+            dwlx = '行政'
+            continue
+        if re.search(r'^\t\t\t直属事业单位$\n', line):
+            dwlx = '事业'
+            continue
+        if re.search(r'^\t\t\t\t\t下设机构$\n', line):
+            dwlx = '行政'
+            continue
+        if re.search(r'^\t\t\t\t\t事业单位$\n', line):
+            dwlx = '事业'
+            continue
+        if line.count('\t') < tab:
+            dwlx = '行政'
+        tab = line.count('\t')
+        row = line.replace('\t', '').replace('\n', '')
+        dwbh = row.split("-")[0]
+        dwmc = row.split("-")[1]
+        if len(dwbh) == 18 or len(dwbh) == 15:
+            sjdw = dwbh[:-3]
+        else:
+            sjdw = ''
+        down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
+        num = num + 1
