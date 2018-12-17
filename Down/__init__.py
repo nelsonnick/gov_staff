@@ -295,16 +295,20 @@ def change_text(filename):
             elif line.count('\t') == 2:
                 after.write('\t\t' + line.split('-')[1])
             else:
-                if line.split('-')[1] == '党委\n'or line.split('-')[1] == '人大\n' or line.split('-')[1] == '政府\n' or line.split('-')[1] == '政协\n' \
-                    or line.split('-')[1] == '民主党派\n' or line.split('-')[1] == '群众团体\n' or line.split('-')[1] == '法院\n' or line.split('-')[1] == '检察院\n' \
-                    or line.split('-')[1] == '经济实体\n' or line.split('-')[1] == '其他\n' or line.split('-')[1] == '街道办事处\n' or line.split('-')[1] == '乡\n' \
-                    or line.split('-')[1] == '镇\n' or line.split('-')[1] == '行政机关\n' or line.split('-')[1] == '直属事业单位\n' or line.split('-')[1] == '下设机构\n' \
-                    or line.split('-')[1] == '事业单位\n':
-                    for index in range(line.count('\t')):
-                        after.write('\t')
-                    after.write(line.split('-')[1])
-                else:
+                # 可能会出现没有-的情况，比如青岛
+                if line.count('-') == 0:
                     after.write(line)
+                else:
+                    if line.split('-')[1] == '党委\n'or line.split('-')[1] == '人大\n' or line.split('-')[1] == '政府\n' or line.split('-')[1] == '政协\n' \
+                        or line.split('-')[1] == '民主党派\n' or line.split('-')[1] == '群众团体\n' or line.split('-')[1] == '法院\n' or line.split('-')[1] == '检察院\n' \
+                        or line.split('-')[1] == '经济实体\n' or line.split('-')[1] == '其他\n' or line.split('-')[1] == '街道办事处\n' or line.split('-')[1] == '乡\n' \
+                        or line.split('-')[1] == '镇\n' or line.split('-')[1] == '行政机关\n' or line.split('-')[1] == '直属事业单位\n' or line.split('-')[1] == '下设机构\n' \
+                        or line.split('-')[1] == '事业单位\n':
+                        for index in range(line.count('\t')):
+                            after.write('\t')
+                        after.write(line.split('-')[1])
+                    else:
+                        after.write(line)
             line = before.readline()
         after.close()
         before.close()
@@ -316,7 +320,8 @@ def change_text(filename):
 # 根据结构字符串下载全部数据
 # 生成的结构字符串需要修改，主要是济南市市直部门，前面要整体缩进一个tab
 # 把“济南市市直”更改成“市直”
-# 省直机关不能用这个！！！！！
+# 省直机关不能用直接这个，需要在“山东省”下面加一级，省直
+# 部门地市需要加上“市直”：临沂
 def down(dict_list, filename):
     szcs = dwzd = dwlb = dwlx = sjdw = dwbh = dwmc = ''
     tab = 0
