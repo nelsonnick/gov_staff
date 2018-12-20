@@ -466,3 +466,5 @@ def down_sz(dict_list, filename):
         down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         num = num + 1
 
+
+

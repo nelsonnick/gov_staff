@@ -4,6 +4,7 @@ import URL
 from Down import down_structure_json
 from Down import down_structure_html
 from Down import down_structure_by_html
+from Down import down_structure_by_json
 from Down import down
 
 # down_structure_json(URL.YanTai, '烟台')
@@ -26,7 +27,7 @@ from Down import down
 # down_structure_html(URL.LaiWu, '莱芜')
 #
 
-# down_structure_html(URL.JiNing, '济宁')
+down_structure_by_json(URL.JiNing, '济宁')
 
 # down(URL.JiNan, '济南')
 # down(URL.QingDao, '青岛')
@@ -45,5 +46,5 @@ from Down import down
 
 # down(URL.JiNing, '济宁')
 
-down_structure_by_html(URL.HeZe, '菏泽')
+# down_structure_by_html(URL.HeZe, '菏泽')
 
