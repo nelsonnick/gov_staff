@@ -4,7 +4,7 @@ import URL
 from Down import down_structure_json
 from Down import down_structure_html
 from Down import down_structure_by_html
-from Down import down_structure_by_json
+from JiNing import down_structure_by_json
 from Down import down
 
 # down_structure_json(URL.YanTai, '烟台')
