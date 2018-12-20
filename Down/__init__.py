@@ -283,6 +283,66 @@ def down_structure_json(dict_list, dwzd):
     file.close()
 
 
+# 根据已经下载的html文件解析生成单位结构文件
+# 参数：单位列表、文件名称
+# 菏泽市需要用到这个，手动修改结构字符串
+def down_structure_by_html(dict_list, filename):
+    for dwzd in dict_list:
+        file = open("../Html/" + filename + '/' + dwzd + ".html", "r", encoding='UTF-8')
+        soup = BeautifulSoup(file, "html.parser").body.form.table.tbody.tr.td.div
+        del soup['id']
+        del soup['style']
+        del soup['class']
+        # 清洗html标签
+        for s in soup.find_all('div'):
+            del s['id']
+            del s['style']
+            del s['class']
+        for s in soup.find_all('img'):
+            s.extract()
+        for s in soup.find_all('a'):
+            del s['id']
+            del s['style']
+            del s['class']
+            del s['title']
+            try:
+                s['href'] = re.search(r'ipt:f\(.+?\);\"', str(s)).group().split('\'')[1] + '-'
+            except:
+                del s['href']
+        for s in soup.find_all('table'):
+            del s['cellpadding']
+            del s['cellspacing']
+            del s['style']
+            del s['class']
+        for s in soup.find_all('td'):
+            del s['id']
+            del s['class']
+            del s['style']
+        # 正则替换标签
+        t = re.sub(r'\s', '', str(soup))
+        t = re.sub(r'<a></a>', '', t)
+        t = re.sub(r'<div>', '', t)
+        t = re.sub(r'</div>', '', t)
+        t = re.sub(r'<td></td>', '\t', t)
+        t = re.sub(r'<td><a', '\t', t)
+        t = re.sub(r'</a></td>', '\n', t)
+        t = re.sub(r'<tr>', '', t)
+        t = re.sub(r'</tr>', '', t)
+        t = re.sub(r'<table>', '', t)
+        t = re.sub(r'</table>', '', t)
+        t = re.sub(r'<tbody>', '', t)
+        t = re.sub(r'</tbody>', '', t)
+        t = re.sub(r'href=\"', '', t)
+        t = re.sub(r'\"\>', '', t)
+        t = re.sub(r'\>', '', t)
+        file.close()
+        f = open("d:\\" + filename + "-before.txt", "a", encoding='UTF-8')
+        f.write(t)
+        print(dwzd + '：已分析完成！')
+        f.close()
+    change_text(filename)
+
+
 # 转换文本
 def change_text(filename):
     before = open("d:\\" + filename + "-before.txt", "r", encoding='UTF-8')
@@ -318,10 +378,10 @@ def change_text(filename):
 
 
 # 根据结构字符串下载全部数据
-# 生成的结构字符串需要修改，主要是济南市市直部门，前面要整体缩进一个tab
-# 把“济南市市直”更改成“市直”
+# 生成的结构字符串需要修改，前面要整体缩进一个tab
 # 省直机关不能用直接这个，需要在“山东省”下面加一级，省直
-# 部门地市需要加上“市直”：临沂
+# 部分地市需要将“XX市市直”改成“市直”：济南、临沂、枣庄
+# 部分地市需要加上最顶级：东营
 def down(dict_list, filename):
     szcs = dwzd = dwlb = dwlx = sjdw = dwbh = dwmc = ''
     tab = 0
@@ -368,6 +428,7 @@ def down(dict_list, filename):
 
 
 # 根据结构字符串下载全部数据----省直机关
+# 这个可以删了
 def down_sz(dict_list, filename):
     szcs = dwzd = dwlb = dwlx = sjdw = dwbh = dwmc = ''
     tab = 0
@@ -404,3 +465,4 @@ def down_sz(dict_list, filename):
             sjdw = ''
         down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         num = num + 1
+

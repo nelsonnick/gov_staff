@@ -23,6 +23,22 @@ QingDao = {
 ZiBo = {
     '淄博': 'http://zbbb.gov.cn/gs/'
 }
+# 莱芜
+LaiWu = {
+    '莱芜': 'http://gs.lwbb.gov.cn/'
+}
+# 聊城
+LiaoCheng = {
+    '市直': 'http://smz.lcbb.gov.cn/',
+    '东昌府区': 'http://dcfsmz.lcbb.gov.cn/',
+    '临清市': 'http://lqsmz.lcbb.gov.cn/',
+    '茌平县': 'http://smz.cpbb.gov.cn/',
+    '东阿县': 'http://smz.debb.gov.cn/',
+    '高唐县': 'http://gtsmz.lcbb.gov.cn/',
+    '阳谷县': 'http://smz.ygbb.gov.cn/',
+    '冠县': 'http://smz.sdgxbb.gov.cn/',
+    '莘县': 'http://smz.sdsxbb.gov.cn/'
+}
 # 枣庄
 ZaoZhuang = {
     '市直': 'http://smz.sdzzbb.gov.cn/',
@@ -36,7 +52,7 @@ ZaoZhuang = {
 # 东营
 DongYing = {
     '市直': 'http://dysmz.hisofter.com:2021/',
-    '东营区': 'http://www.dyqbb.gov.cn:8056/default.aspx',
+    '东营区': 'http://www.dyqbb.gov.cn:8056/',
     '河口区': 'http://smz.hkbb.gov.cn/',
     '广饶县': 'http://grsmz.5hl.cn:2021/',
     # '垦利区': 'http://www.klbb.gov.cn/smz/',  \\网址能打开，但是不是标准格式
@@ -50,29 +66,13 @@ WeiFang = {
     '坊子区': 'http://smz.wfbb.gov.cn/fz/',
     '寒亭区': 'http://smz.wfbb.gov.cn/ht/',
     '青州市': 'http://smz.wfbb.gov.cn/qz/',
-    '诸城市': 'http://221.1.106.123:7000/default.aspx',
+    '诸城市': 'http://221.1.106.123:7000/',
     '寿光市': 'http://smz.wfbb.gov.cn/sg/',
     '安丘市': 'http://smz.wfbb.gov.cn/aq/',
     '昌邑市': 'http://smz.wfbb.gov.cn/cy/',
     '高密市': 'http://smz.wfbb.gov.cn/gm/',
     '临朐县': 'http://smz.wfbb.gov.cn/lq/',
     '昌乐县': 'http://smz.wfbb.gov.cn/cl/',
-}
-# 济宁
-JiNing = {
-    '市直': 'http://www.jnjgbz.gov.cn/sz_list/index.php',
-    # '任城区': '',
-    '兖州区': 'http://www.jnjgbz.gov.cn/jnyzbb/',
-    '曲阜市': 'http://www.jnjgbz.gov.cn/jnqfbb/',
-    '邹城市': 'http://www.jnjgbz.gov.cn/jnzcbb/',
-    # '嘉祥县': '',
-    '汶上县': 'http://www.jnjgbz.gov.cn/jnwesbb/',
-    '梁山县': 'http://www.jnjgbz.gov.cn/jnlsbb/',
-    '微山县': 'http://www.jnjgbz.gov.cn/jnwsbb/',
-    '鱼台县': 'http://www.jnjgbz.gov.cn/jnytbb/',
-    '金乡县': 'http://www.jnjgbz.gov.cn/jnjxbb/',
-    '泗水县': 'http://www.jnjgbz.gov.cn/jnssbb/'
-
 }
 # 泰安
 TaiAn = {
@@ -94,7 +94,6 @@ WeiHai = {
     # '高区': '',
     # '经区': '',
     # '临港区': ''
-
 }
 # 滨州
 BinZhou = {
@@ -103,7 +102,7 @@ BinZhou = {
     '沾化区': 'http://218.56.22.99:8123/',
     '邹平市': 'http://zpbb.zpgd.net/',
     '惠民县': 'http://smz.hmjgbz.gov.cn/',
-    # '博兴县': 'http://www.bxbb.gov.cn/smzgs/',
+    '博兴县': 'http://www.bxbb.gov.cn/smzgs/',
     '阳信县': 'http://www.yxbb.gov.cn/smzgs/',
     # '无棣县': 'http://www.sdwdbb.gov.cn/smzgs/'
 }
@@ -121,18 +120,6 @@ DeZhou = {
     # '庆云县': '',
     # '宁津县': '',
     # '齐河县': '',
-}
-# 聊城
-LiaoCheng = {
-    '市直': 'http://smz.lcbb.gov.cn/',
-    '东昌府区': 'http://dcfsmz.lcbb.gov.cn/',
-    '临清市': 'http://lqsmz.lcbb.gov.cn/',
-    '茌平县': 'http://smz.cpbb.gov.cn/',
-    '东阿县': 'http://smz.debb.gov.cn/',
-    '高唐县': 'http://gtsmz.lcbb.gov.cn/',
-    '阳谷县': 'http://smz.ygbb.gov.cn/',
-    '冠县': 'http://smz.sdgxbb.gov.cn/',
-    '莘县': 'http://smz.sdsxbb.gov.cn/'
 }
 # 临沂
 LinYi = {
@@ -152,22 +139,36 @@ LinYi = {
 }
 # 菏泽
 HeZe = {
-    '市直': 'http://www.hzbb.gov.cn/smz/default.aspx',
+    '市直': 'http://www.hzbb.gov.cn/smz/',
+    # '开发区': '',
+    # '高新区': '',
     # '牡丹区': '',
-    # '定陶区': '',
-    # '曹县': '',
+    '定陶区': 'http://www.hzbb.gov.cn/dtbb/smz/',
+    # '曹县': 'http://www.hzbb.gov.cn/cxbb/smz/',
+    # '成武县': 'http://www.hzbb.gov.cn/cwbb/smz/',
     # '单县': '',
-    # '巨野县': '',
-    # '武城县': '',
-    # '覠城县': '',
+    # '巨野县': 'http://www.hzbb.gov.cn/jybb/smz/',
+    '郓城县': 'http://www.hzbb.gov.cn/ycbb/smz/',
     # '鄄城县': '',
-    # '东明县': '',
+    # '东明县': 'http://www.hzbb.gov.cn/dmbb/smz/',
 }
-# 莱芜
-LaiWu = {
-    '莱芜': 'http://gs.lwbb.gov.cn/'
-}
+# 济宁--->需要重新编写代码（直接获取JSON字符串）
+JiNing = {
+    # http://www.jnjgbz.gov.cn/sz_list/index.php/Home/Index/get_list.html
+    '市直': 'http://www.jnjgbz.gov.cn/sz_list/',
+    # '任城区': '',
+    '兖州区': 'http://www.jnjgbz.gov.cn/jnyzbb/',
+    '曲阜市': 'http://www.jnjgbz.gov.cn/jnqfbb/',
+    '邹城市': 'http://www.jnjgbz.gov.cn/jnzcbb/',
+    # '嘉祥县': '',
+    '汶上县': 'http://www.jnjgbz.gov.cn/jnwesbb/',
+    '梁山县': 'http://www.jnjgbz.gov.cn/jnlsbb/',
+    '微山县': 'http://www.jnjgbz.gov.cn/jnwsbb/',
+    '鱼台县': 'http://www.jnjgbz.gov.cn/jnytbb/',
+    '金乡县': 'http://www.jnjgbz.gov.cn/jnjxbb/',
+    '泗水县': 'http://www.jnjgbz.gov.cn/jnssbb/'
 
+}
 # 烟台 var zNodes = []
 YanTai = {
     '烟台': 'http://smz.yantai.gov.cn/'
