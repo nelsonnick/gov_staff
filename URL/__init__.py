@@ -156,7 +156,7 @@ HeZe = {
 JiNing = {
     # http://www.jnjgbz.gov.cn/sz_list/index.php/Home/Index/get_list.html
     '市直': 'http://www.jnjgbz.gov.cn/sz_list/',
-    # '任城区': '',
+    '任城区': 'http://www.jnjgbz.gov.cn/jnrcbb/',
     '兖州区': 'http://www.jnjgbz.gov.cn/jnyzbb/',
     '曲阜市': 'http://www.jnjgbz.gov.cn/jnqfbb/',
     '邹城市': 'http://www.jnjgbz.gov.cn/jnzcbb/',
