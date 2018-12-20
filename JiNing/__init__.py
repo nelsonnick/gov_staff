@@ -26,10 +26,13 @@ def change_text(filename):
                         or line.split('-')[1] == '民主党派\n' or line.split('-')[1] == '群众团体\n' or line.split('-')[1] == '法院\n' or line.split('-')[1] == '检察院\n' \
                         or line.split('-')[1] == '经济实体\n' or line.split('-')[1] == '其他\n' or line.split('-')[1] == '街道办事处\n' or line.split('-')[1] == '乡\n' \
                         or line.split('-')[1] == '镇\n' or line.split('-')[1] == '行政机关\n' or line.split('-')[1] == '直属事业单位\n' or line.split('-')[1] == '下设机构\n' \
-                        or line.split('-')[1] == '事业单位\n':
+                        or line.split('-')[1] == '事业单位\n' or line.split('-')[1] == '党委系统\n'or line.split('-')[1] == '人大系统\n' or line.split('-')[1] == '政府系统\n' or line.split('-')[1] == '政协系统\n' \
+                        or line.split('-')[1] == '民主党派系统\n' or line.split('-')[1] == '群众团体体统\n' or line.split('-')[1] == '法院系统\n' or line.split('-')[1] == '检察院系统\n' \
+                        or line.split('-')[1] == '经济实体系统\n' or line.split('-')[1] == '其他系统\n' or line.split('-')[1] == '街、镇\n' or line.split('-')[1] == '街道\n' \
+                        or line.split('-')[1] == '镇政府\n' or line.split('-')[1] == '群众团体体统\n':
                         for index in range(line.count('\t')):
                             after.write('\t')
-                        after.write(line.split('-')[1])
+                        after.write(line.split('-')[1].replace('系统\n', '\n').replace('体统\n', '\n').replace('镇政府\n', '镇\n').replace('街道\n', '街道办事处\n'))
                     else:
                         after.write(line)
             line = before.readline()
@@ -60,6 +63,7 @@ def down_structure_by_json(dict_list):
         for j in json.loads(t):
             db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
             cursor = db.cursor()
+            p = str(j['pid']) + j['name']
             sql = "INSERT INTO json(id, pid, name) VALUES ('%s', '%s', '%s')" % (j['id'], j['pid'], j['name'])
             try:
                 cursor.execute(sql)
@@ -98,16 +102,24 @@ def down_structure_by_json(dict_list):
                                 cursor_f.execute("SELECT id,pid,name FROM json WHERE pid =" + f[0])
                                 file.write('\t\t\t\t\t\t\t' + f[0] + '-' + f[2] + '\n')
                                 for g in cursor_f.fetchall():
-                                    file.write('\t\t\t\t\t\t\t' + g[0] + '-' + g[2] + '\n')
+                                    cursor_g = db.cursor()
+                                    cursor_g.execute("SELECT id,pid,name FROM json WHERE pid =" + g[0])
+                                    file.write('\t\t\t\t\t\t\t\t' + g[0] + '-' + g[2] + '\n')
+                                    for h in cursor_g.fetchall():
+                                        cursor_h = db.cursor()
+                                        cursor_h.execute("SELECT id,pid,name FROM json WHERE pid =" + h[0])
+                                        file.write('\t\t\t\t\t\t\t\t\t' + h[0] + '-' + h[2] + '\n')
+                                        for i in cursor_h.fetchall():
+                                            file.write('\t\t\t\t\t\t\t\t\t\t' + i[0] + '-' + i[2] + '\n')
         db.close()
         db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
         cursors = db.cursor()
         try:
-            cursors.execute("DELETE FROM json WHERE 1=1")
+            cursors.execute("DELETE FROM json")
             db.commit()
         except:
             db.rollback()
         db.close()
         file.close()
         print(dwzd + '：已下载完成！')
-    change_text(dwzd)
+        change_text(dwzd)

@@ -91,5 +91,5 @@ DROP TABLE IF EXISTS `json`;
 CREATE TABLE `json` (
   `id` varchar(255) DEFAULT NULL COMMENT '本级序号',
   `pid` varchar(255) DEFAULT NULL COMMENT '上级序号',
-  `name` varchar(255) DEFAULT NULL COMMENT '单位名称',
+  `name` varchar(255) DEFAULT NULL COMMENT '单位名称'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
