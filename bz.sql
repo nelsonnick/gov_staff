@@ -89,7 +89,10 @@ CREATE TABLE `person_err` (
 -- ----------------------------
 DROP TABLE IF EXISTS `json`;
 CREATE TABLE `json` (
-  `id` varchar(255) DEFAULT NULL COMMENT '本级序号',
-  `pid` varchar(255) DEFAULT NULL COMMENT '上级序号',
-  `name` varchar(255) DEFAULT NULL COMMENT '单位名称'
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `jid` varchar(255) DEFAULT NULL COMMENT '本级序号',
+  `code` varchar(255) DEFAULT NULL COMMENT '本级序号',
+  `cid` varchar(255) DEFAULT NULL COMMENT '上级序号',
+  `name` varchar(255) DEFAULT NULL COMMENT '单位名称',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
