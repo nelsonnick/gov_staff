@@ -184,11 +184,11 @@ def update_dwbh(front_str):
             # 有上级部门
             if result[5] != 0:
                 this_dwbh = get_id(result[6], row[5])
-                print(this_dwbh)
+                print("%s-%s-%s" % (row[4], row[5], this_dwbh))
             # 无上级部门
             else:
                 this_dwbh = get_id(front_str, row[5])
-                print(this_dwbh)
+                print("%s-%s-%s？？？？？" % (row[4], row[5], this_dwbh))
         else:
             pass
 
@@ -198,44 +198,44 @@ def export(dwzd):
     file = open("d:\\" + dwzd + "-before.txt", "a", encoding='UTF-8')
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    cursor.execute("SELECT id, jid, name FROM json WHERE cid =0")
+    cursor.execute("SELECT id, jid, name, num FROM json WHERE cid =0")
     result = cursor.fetchone()
-    cursor.execute("SELECT id, jid, name FROM json WHERE jid  = %s" % (result[0]))
-    file.write('\t1-' + dwzd + '\n')
+    cursor.execute("SELECT id, jid, name, num FROM json WHERE jid  = %s" % (result[0]))
+    file.write('\t' + dwzd + '\n')
     for a in cursor.fetchall():
         cursor_a = db.cursor()
-        cursor_a.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (a[0]))
-        file.write('\t\t%s-%s\n' % (a[0], a[2]))
+        cursor_a.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (a[0]))
+        file.write('\t\t%s-%s\n' % (a[3], a[2]))
         for b in cursor_a.fetchall():
             cursor_b = db.cursor()
-            cursor_b.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (b[0]))
-            file.write('\t\t\t%s-%s\n' % (b[0], b[2]))
+            cursor_b.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (b[0]))
+            file.write('\t\t\t%s-%s\n' % (b[3], b[2]))
             for c in cursor_b.fetchall():
                 cursor_c = db.cursor()
-                cursor_c.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (c[0]))
-                file.write('\t\t\t\t%s-%s\n' % (c[0], c[2]))
+                cursor_c.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (c[0]))
+                file.write('\t\t\t\t%s-%s\n' % (c[3], c[2]))
                 for d in cursor_c.fetchall():
                     cursor_d = db.cursor()
-                    cursor_d.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (d[0]))
-                    file.write('\t\t\t\t\t%s-%s\n' % (d[0], d[2]))
+                    cursor_d.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (d[0]))
+                    file.write('\t\t\t\t\t%s-%s\n' % (d[3], d[2]))
                     for e in cursor_d.fetchall():
                         cursor_e = db.cursor()
-                        cursor_e.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (e[0]))
-                        file.write('\t\t\t\t\t\t%s-%s\n' % (e[0], e[2]))
+                        cursor_e.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (e[0]))
+                        file.write('\t\t\t\t\t\t%s-%s\n' % (e[3], e[2]))
                         for f in cursor_e.fetchall():
                             cursor_f = db.cursor()
-                            cursor_f.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (f[0]))
-                            file.write('\t\t\t\t\t\t\t%s-%s\n' % (f[0], f[2]))
+                            cursor_f.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (f[0]))
+                            file.write('\t\t\t\t\t\t\t%s-%s\n' % (f[3], f[2]))
                             for g in cursor_f.fetchall():
                                 cursor_g = db.cursor()
-                                cursor_g.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (g[0]))
-                                file.write('\t\t\t\t\t\t\t\t%s-%s\n' % (g[0], g[2]))
+                                cursor_g.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (g[0]))
+                                file.write('\t\t\t\t\t\t\t\t%s-%s\n' % (g[3], g[2]))
                                 for h in cursor_g.fetchall():
                                     cursor_h = db.cursor()
-                                    cursor_h.execute("SELECT id, jid, name FROM json WHERE jid = %s" % (h[0]))
-                                    file.write('\t\t\t\t\t\t\t\t\t%s-%s\n' % (h[0], h[2]))
+                                    cursor_h.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (h[0]))
+                                    file.write('\t\t\t\t\t\t\t\t\t%s-%s\n' % (h[3], h[2]))
                                     for i in cursor_h.fetchall():
-                                        file.write('\t\t\t\t\t\t\t\t\t\t%s-%s\n' % (i[0], i[2]))
+                                        file.write('\t\t\t\t\t\t\t\t\t\t%s-%s\n' % (i[3], i[2]))
     db.close()
     # db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     # cursors = db.cursor()
@@ -250,4 +250,8 @@ def export(dwzd):
     change_text(dwzd)
 
 
-update_dwbh('037008000')
+# save_sql('http://www.jnjgbz.gov.cn/sz_list/')
+# update_jid()
+# update_num()
+# update_dwbh('037008000')
+export('济宁')
