@@ -164,7 +164,7 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
 # 按地区获取结构字符串---根据html文件解析
 # 参数：单位列表、单位驻地
 # 返回值：结构字符串
-# 济南、青岛、淄博、枣庄、东营、潍坊、济宁、泰安、威海、滨州、德州、聊城、临沂、菏泽、莱芜
+# 济南、青岛、淄博、枣庄、东营、潍坊、泰安、威海、滨州、德州、聊城、临沂、菏泽、莱芜
 def get_structure_str_html(dict_list, dwzd):
     browser = webdriver.Chrome()
     browser.get(dict_list[dwzd] + "TreeViewPage.aspx")
@@ -221,7 +221,7 @@ def get_structure_str_html(dict_list, dwzd):
 
 # 下载单位结构文件---根据html文件解析
 # 参数：单位列表、文件名称
-# 济南、青岛、淄博、枣庄、东营、潍坊、济宁、泰安、威海、滨州、德州、聊城、临沂、菏泽、莱芜
+# 济南、青岛、淄博、枣庄、东营、潍坊、泰安、威海、滨州、德州、聊城、临沂、菏泽、莱芜
 def down_structure_html(dict_list, filename):
     file = open("d:\\" + filename + "-before.txt", "a", encoding='UTF-8')
     for dwzd in dict_list:

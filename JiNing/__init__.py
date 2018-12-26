@@ -43,6 +43,8 @@ def change_text(filename):
         os.rename("d:\\" + filename + "-before.txt", "d:\\" + filename + ".txt")
 
 
+# 获取编号
+# 参数：前置字符串、序号字符串
 def get_id(front_str, id_str):
     if len(str(id_str)) == 1:
         return front_str + "00" + str(id_str)
@@ -98,8 +100,9 @@ def down_structure_by_json(dict_list):
             db.close()
         db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
         cursor = db.cursor()
-        cursor.execute("SELECT id, jid, name FROM json WHERE jid =0")
+        cursor.execute("SELECT id, jid, name FROM json WHERE cid =0")
         result = cursor.fetchone()
+        print(result)
         cursor.execute("SELECT id, jid, name FROM json WHERE jid =" + result[0])
         file.write('\t1-' + dwzd + '\n')
         for a in cursor.fetchall():
@@ -210,4 +213,3 @@ def aaaa():
     change_text("济宁")
 
 
-aaaa()
