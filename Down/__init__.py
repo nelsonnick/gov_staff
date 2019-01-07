@@ -397,24 +397,24 @@ def down(dict_list, filename):
             dwlb = line.replace('\t', '').replace('\n', '')
             continue
         if re.search(r'^\t\t\t\t行政机关$\n', line):
-            dwlx = '行政'
+            dwlx = '行政机关'
             continue
         if re.search(r'^\t\t\t\t直属事业单位$\n', line):
-            dwlx = '事业'
+            dwlx = '事业单位'
             continue
         if re.search(r'^\t\t\t\t\t\t下设机构$\n', line):
-            dwlx = '行政'
+            dwlx = '行政机关'
             continue
         if re.search(r'^\t\t\t\t\t\t事业单位$\n', line):
-            dwlx = '事业'
+            dwlx = '事业单位'
             continue
         if re.search(r'^\t\t\t街道办事处$\n', line):
-            dwlx = '行政'
+            dwlx = '行政机关'
             continue
         if line.count('\t') < tab:
-            dwlx = '行政'
+            dwlx = '行政机关'
         if (dwlb == '街道办事处' or dwlb == '乡' or dwlb == '镇') and re.search(r'^\t\t\t\t\t[^\t].+?$\n', line):
-            dwlx = '事业'
+            dwlx = '事业单位'
         tab = line.count('\t')
         row = line.replace('\t', '').replace('\n', '')
         dwbh = row.split("-")[0]
