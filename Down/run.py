@@ -14,7 +14,7 @@ from Down import down
 # down_structure_html(URL.JiNan, '济南')
 # down_structure_html(URL.QingDao, '青岛')
 # down_structure_html(URL.ZiBo, '淄博')
-down_structure_html(URL.ZaoZhuang, '枣庄')
+# down_structure_html(URL.ZaoZhuang, '枣庄')
 # down_structure_html(URL.DongYing, '东营')
 # down_structure_html(URL.WeiFang, '潍坊')
 # down_structure_html(URL.TaiAn, '泰安')
