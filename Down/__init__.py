@@ -20,8 +20,18 @@ from department import get_department
 # 参数：单位驻地、单位编号、单位名称、编制类型
 def down_person_list(dict_list, dwzd, dwbh, dwmc, bzlx):
     url = dict_list[dwzd] + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Connection': 'keep-alive',
+        'DNT': '1',
+        'Host': '218.56.49.18',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36'
+    }
     try:
-        rt = requests.get(url, timeout=1000)
+        rt = requests.get(url, timeout=1000, headers=headers)
     except:
         get_person_err(dwbh, dwmc, bzlx, url)
         return
@@ -60,13 +70,25 @@ def down_person_list(dict_list, dwzd, dwbh, dwmc, bzlx):
 def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc):
     xz_plan_num = xz_real_num = xz_lone_num = sy_plan_num = sy_real_num = sy_lone_num = gq_plan_num = gq_real_num = gq_lone_num = '0'
     url = dict_list[dwzd] + "UnitDetails.aspx?unitId=" + dwbh
-    time = BeautifulSoup(requests.get(dict_list[dwzd]).text, "html.parser").find_all(id="SPAN1")[0].get_text()[9:]
+    headers = {
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate',
+        'Accept-Language': 'zh-CN,zh;q=0.9',
+        'Connection': 'keep-alive',
+        'DNT': '1',
+        'Host': '218.56.49.18',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36'
+    }
+    time = BeautifulSoup(requests.get(dict_list[dwzd], headers=headers).text, "html.parser").find_all(id="SPAN1")[0].get_text()[9:]
     try:
-        rt = requests.get(url, timeout=1000)
+        rt = requests.get(url, timeout=1000, headers=headers)
     except:
         get_department_err(dwbh, dwmc, url)
         return
-    soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
+    rt.encoding = 'utf-8'
+    soup = BeautifulSoup(rt.text, "html.parser").find('div', style="width: 757; height: 582; background-color: #EFF8FF;").table.find_all('tr')[2].td.table
+    # soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
     if soup.find_all('tr')[0].find_all('td')[1].span.b.font.string is not None:
         dwmc = soup.find_all('tr')[0].find_all('td')[1].span.b.font.string.strip()
     else:

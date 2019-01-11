@@ -28,6 +28,7 @@ from Down import down
 
 # down_structure_by_json(URL.JiNing)
 
+down(URL.ShengZhi, '省直')
 # down(URL.JiNan, '济南')
 # down(URL.QingDao, '青岛')
 # down(URL.ZiBo, '淄博')
