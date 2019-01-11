@@ -106,19 +106,23 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
     else:
         ldzs = ''
-    if soup.find_all('tr')[2].find_all('td')[3].span.string is not None:
-        jb = soup.find_all('tr')[2].find_all('td')[3].span.string.strip()
-    elif soup.find_all('tr')[2].find_all('td')[3].span.b.string is not None:
-        jb = soup.find_all('tr')[2].find_all('td')[3].span.b.string.strip()
-    elif soup.find_all('tr')[2].find_all('td')[3].span.b.font.string is not None:
-        jb = soup.find_all('tr')[2].find_all('td')[3].span.b.font.string.strip()
-    else:
+    if soup.find_all('tr')[2].find_all('td')[3].span.string is None:
         jb = ''
+    else:
+        try:
+            soup.find_all('tr')[2].find_all('td')[3].span.b.font.string
+        except AttributeError:
+            jb = soup.find_all('tr')[2].find_all('td')[3].span.string.strip()
+        else:
+            if soup.find_all('tr')[2].find_all('td')[3].span.b.font.string is not None:
+                jb = soup.find_all('tr')[2].find_all('td')[3].span.b.font.string.strip()
+            else:
+                jb = ''
     if soup.find_all(id="lblNeiSheJG")[0].string is not None:
         nsjg = soup.find_all(id="lblNeiSheJG")[0].string.strip()
     else:
         nsjg = ''
-    if nsjg == "\"":
+    if nsjg == "\'":
         nsjg = ''
         # 有一行的情况
     if soup.find_all(id="lblMainDuty")[0].string is not None:
@@ -131,7 +135,7 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         # browser.close()
         # zyzz = BeautifulSoup(rt, "html.parser").find_all(id="lblMainDuty")[0].get_text()
         zyzz = ''
-    if zyzz == "\"":
+    if zyzz == "\'":
         zyzz = ''
     if soup.find_all('tr')[4].td.div.table is not None:
         number = soup.find_all('tr')[4].td.div.table.find_all('tr')
