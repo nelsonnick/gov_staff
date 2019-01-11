@@ -1,9 +1,48 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+
 import URL
 import pymysql
 import requests
 import json
+import os
+
+
+# 转换文本
+def change_text(filename):
+    before = open("d:\\" + filename + "-before.txt", "r", encoding='UTF-8')
+    line = before.readline()
+    if line.find('-') > 0:
+        after = open("d:\\" + filename + ".txt", "a", encoding='UTF-8')
+        while line:
+            if line.count('\t') == 1:
+                after.write('\t' + line.split('-')[1])
+            elif line.count('\t') == 2:
+                after.write('\t\t' + line.split('-')[1])
+            else:
+                # 可能会出现没有-的情况，比如青岛
+                if line.count('-') == 0:
+                    after.write(line)
+                else:
+                    if line.split('-')[1] == '党委\n'or line.split('-')[1] == '人大\n' or line.split('-')[1] == '政府\n' or line.split('-')[1] == '政协\n' \
+                        or line.split('-')[1] == '民主党派\n' or line.split('-')[1] == '群众团体\n' or line.split('-')[1] == '法院\n' or line.split('-')[1] == '检察院\n' \
+                        or line.split('-')[1] == '经济实体\n' or line.split('-')[1] == '其他\n' or line.split('-')[1] == '街道办事处\n' or line.split('-')[1] == '乡\n' \
+                        or line.split('-')[1] == '镇\n' or line.split('-')[1] == '行政机关\n' or line.split('-')[1] == '直属事业单位\n' or line.split('-')[1] == '下设机构\n' \
+                        or line.split('-')[1] == '事业单位\n' or line.split('-')[1] == '党委系统\n'or line.split('-')[1] == '人大系统\n' or line.split('-')[1] == '政府系统\n' or line.split('-')[1] == '政协系统\n' \
+                        or line.split('-')[1] == '民主党派系统\n' or line.split('-')[1] == '群众团体体统\n' or line.split('-')[1] == '法院系统\n' or line.split('-')[1] == '检察院系统\n' \
+                        or line.split('-')[1] == '经济实体系统\n' or line.split('-')[1] == '其他系统\n' or line.split('-')[1] == '街、镇\n' or line.split('-')[1] == '街道\n' \
+                        or line.split('-')[1] == '镇政府\n' or line.split('-')[1] == '群众团体体统\n':
+                        for index in range(line.count('\t')):
+                            after.write('\t')
+                        after.write(line.split('-')[1].replace('系统\n', '\n').replace('体统\n', '\n').replace('镇政府\n', '镇\n').replace('街道\n', '街道办事处\n'))
+                    else:
+                        after.write(line)
+            line = before.readline()
+        after.close()
+        before.close()
+    else:
+        before.close()
+        os.rename("d:\\" + filename + "-before.txt", "d:\\" + filename + ".txt")
 
 
 # 保存到数据库
@@ -119,4 +158,100 @@ def update_num():
     db.close()
 
 
-update_num()
+# 获取编号
+# 参数：前置字符串、序号字符串
+def get_id(front_str, id_str):
+    if len(str(id_str)) == 1:
+        return front_str + "00" + str(id_str)
+    elif len(str(id_str)) == 2:
+        return front_str + "0" + str(id_str)
+    elif len(str(id_str)) == 3:
+        return front_str + str(id_str)
+    else:
+        return front_str + "000"
+
+
+# 更新单位编号
+def update_dwbh(front_str):
+    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    cursor = db.cursor()
+    cursor.execute("SELECT id,jid,code,cid,name,num FROM json")
+    for row in cursor.fetchall():
+        if row[5] != 0:
+            up = db.cursor()
+            up.execute("SELECT id,jid,code,cid,name,num,dwbh FROM json WHERE id = %s" % (row[1]))
+            result = up.fetchone()
+            # 有上级部门
+            if result[5] != 0:
+                this_dwbh = get_id(result[6], row[5])
+                print("%s-%s-%s" % (row[4], row[5], this_dwbh))
+            # 无上级部门
+            else:
+                this_dwbh = get_id(front_str, row[5])
+                print("%s-%s-%s？？？？？" % (row[4], row[5], this_dwbh))
+        else:
+            pass
+
+
+# 导出文本
+def export(dwzd):
+    file = open("d:\\" + dwzd + "-before.txt", "a", encoding='UTF-8')
+    db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    cursor = db.cursor()
+    cursor.execute("SELECT id, jid, name, num FROM json WHERE cid =0")
+    result = cursor.fetchone()
+    cursor.execute("SELECT id, jid, name, num FROM json WHERE jid  = %s" % (result[0]))
+    file.write('\t' + dwzd + '\n')
+    for a in cursor.fetchall():
+        cursor_a = db.cursor()
+        cursor_a.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (a[0]))
+        file.write('\t\t%s-%s\n' % (a[3], a[2]))
+        for b in cursor_a.fetchall():
+            cursor_b = db.cursor()
+            cursor_b.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (b[0]))
+            file.write('\t\t\t%s-%s\n' % (b[3], b[2]))
+            for c in cursor_b.fetchall():
+                cursor_c = db.cursor()
+                cursor_c.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (c[0]))
+                file.write('\t\t\t\t%s-%s\n' % (c[3], c[2]))
+                for d in cursor_c.fetchall():
+                    cursor_d = db.cursor()
+                    cursor_d.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (d[0]))
+                    file.write('\t\t\t\t\t%s-%s\n' % (d[3], d[2]))
+                    for e in cursor_d.fetchall():
+                        cursor_e = db.cursor()
+                        cursor_e.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (e[0]))
+                        file.write('\t\t\t\t\t\t%s-%s\n' % (e[3], e[2]))
+                        for f in cursor_e.fetchall():
+                            cursor_f = db.cursor()
+                            cursor_f.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (f[0]))
+                            file.write('\t\t\t\t\t\t\t%s-%s\n' % (f[3], f[2]))
+                            for g in cursor_f.fetchall():
+                                cursor_g = db.cursor()
+                                cursor_g.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (g[0]))
+                                file.write('\t\t\t\t\t\t\t\t%s-%s\n' % (g[3], g[2]))
+                                for h in cursor_g.fetchall():
+                                    cursor_h = db.cursor()
+                                    cursor_h.execute("SELECT id, jid, name, num FROM json WHERE jid = %s" % (h[0]))
+                                    file.write('\t\t\t\t\t\t\t\t\t%s-%s\n' % (h[3], h[2]))
+                                    for i in cursor_h.fetchall():
+                                        file.write('\t\t\t\t\t\t\t\t\t\t%s-%s\n' % (i[3], i[2]))
+    db.close()
+    # db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
+    # cursors = db.cursor()
+    # try:
+    #     cursors.execute("DELETE FROM json")
+    #     db.commit()
+    # except:
+    #     db.rollback()
+    # db.close()
+    file.close()
+    print(dwzd + '：已下载完成！')
+    change_text(dwzd)
+
+
+# save_sql('http://www.jnjgbz.gov.cn/sz_list/')
+# update_jid()
+# update_num()
+# update_dwbh('037008000')
+export('济宁')

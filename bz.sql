@@ -95,5 +95,6 @@ CREATE TABLE `json` (
   `cid` varchar(255) DEFAULT NULL COMMENT '上级序号',
   `name` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `num` int(11) DEFAULT NULL COMMENT '新增序号',
+  `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
