@@ -474,6 +474,14 @@ def down(dict_list, filename):
             dwlx = '事业单位'
             tab = line.count('\t')
             continue
+        if re.search(r'^\t\t\t\t\t\t\t下设机构$\n', line):
+            dwlx = '行政机关'
+            tab = line.count('\t')
+            continue
+        if re.search(r'^\t\t\t\t\t\t\t事业单位$\n', line):
+            dwlx = '事业单位'
+            tab = line.count('\t')
+            continue
         if re.search(r'^\t\t\t街道办事处$\n', line):
             dwlx = '行政机关'
             tab = line.count('\t')
@@ -484,9 +492,10 @@ def down(dict_list, filename):
             dwlx = '事业单位'
         tab = line.count('\t')
         row = line.replace('\t', '').replace('\n', '')
+        print(row)
         dwbh = row.split("-")[0]
         dwmc = row.split("-")[1]
-        if len(dwbh) > 3 :
+        if len(dwbh) > 3:
             sjdw = dwbh[:-3]
         else:
             sjdw = ''
