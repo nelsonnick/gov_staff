@@ -89,7 +89,9 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
     rt.encoding = 'utf-8'
     soup = BeautifulSoup(rt.text, "html.parser").find('div', style="width: 757; height: 582; background-color: #EFF8FF;").table.find_all('tr')[2].td.table
     # soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
-    if soup.find_all('tr')[0].find_all('td')[1].span.b.font.string is not None:
+    if soup.find_all('tr')[0].find_all('td')[1].span.string is not None:
+        dwmc = soup.find_all('tr')[0].find_all('td')[1].span.string.strip()
+    elif soup.find_all('tr')[0].find_all('td')[1].span.b.font.string is not None:
         dwmc = soup.find_all('tr')[0].find_all('td')[1].span.b.font.string.strip()
     else:
         dwmc = ''
@@ -104,13 +106,19 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
     else:
         ldzs = ''
-    if soup.find_all('tr')[2].find_all('td')[3].span.b.font.string is not None:
+    if soup.find_all('tr')[2].find_all('td')[3].span.string is not None:
+        jb = soup.find_all('tr')[2].find_all('td')[3].span.string.strip()
+    elif soup.find_all('tr')[2].find_all('td')[3].span.b.string is not None:
+        jb = soup.find_all('tr')[2].find_all('td')[3].span.b.string.strip()
+    elif soup.find_all('tr')[2].find_all('td')[3].span.b.font.string is not None:
         jb = soup.find_all('tr')[2].find_all('td')[3].span.b.font.string.strip()
     else:
         jb = ''
     if soup.find_all(id="lblNeiSheJG")[0].string is not None:
         nsjg = soup.find_all(id="lblNeiSheJG")[0].string.strip()
     else:
+        nsjg = ''
+    if nsjg == "\"":
         nsjg = ''
         # 有一行的情况
     if soup.find_all(id="lblMainDuty")[0].string is not None:
@@ -123,14 +131,22 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         # browser.close()
         # zyzz = BeautifulSoup(rt, "html.parser").find_all(id="lblMainDuty")[0].get_text()
         zyzz = ''
+    if zyzz == "\"":
+        zyzz = ''
     if soup.find_all('tr')[4].td.div.table is not None:
         number = soup.find_all('tr')[4].td.div.table.find_all('tr')
         for num in number:
             if num.find_all('td')[0].string.strip().find("行政编制数") != -1:
-                if num.find_all('td')[1].font.string.strip() == "&nbsp;":
-                    xz_plan_num = "0"
+                if num.find_all('td')[1].font is not None:
+                    if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                        xz_plan_num = "0"
+                    else:
+                        xz_plan_num = num.find_all('td')[1].font.string.strip()
                 else:
-                    xz_plan_num = num.find_all('td')[1].font.string.strip()
+                    if num.find_all('td')[1].string.strip() == "&nbsp;":
+                        xz_plan_num = "0"
+                    else:
+                        xz_plan_num = num.find_all('td')[1].string.strip()
                 if num.find_all('td')[3].a.string.strip() == "&nbsp;":
                     xz_real_num = "0"
                     xz_lone_num = "0"
@@ -142,10 +158,16 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
                         xz_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
                         xz_lone_num = num.find_all('td')[3].find_all('a')[1].string.strip()
             elif num.find_all('td')[0].string.strip().find("事业编制数") != -1:
-                if num.find_all('td')[1].font.string.strip() == "&nbsp;":
-                    sy_plan_num = "0"
+                if num.find_all('td')[1].font is not None:
+                    if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                        sy_plan_num = "0"
+                    else:
+                        sy_plan_num = num.find_all('td')[1].font.string.strip()
                 else:
-                    sy_plan_num = num.find_all('td')[1].font.string.strip()
+                    if num.find_all('td')[1].string.strip() == "&nbsp;":
+                        sy_plan_num = "0"
+                    else:
+                        sy_plan_num = num.find_all('td')[1].string.strip()
                 if num.find_all('td')[3].a.string.strip() == "&nbsp;":
                     sy_real_num = "0"
                     sy_lone_num = "0"
@@ -157,10 +179,16 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
                         sy_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
                         sy_lone_num = num.find_all('td')[3].find_all('a')[1].string.strip()
             elif num.find_all('td')[0].string.strip().find("工勤编制数") != -1:
-                if num.find_all('td')[1].font.string.strip() == "&nbsp;":
-                    gq_plan_num = "0"
+                if num.find_all('td')[1].font is not None:
+                    if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                        gq_plan_num = "0"
+                    else:
+                        gq_plan_num = num.find_all('td')[1].font.string.strip()
                 else:
-                    gq_plan_num = num.find_all('td')[1].font.string.strip()
+                    if num.find_all('td')[1].string.strip() == "&nbsp;":
+                        gq_plan_num = "0"
+                    else:
+                        gq_plan_num = num.find_all('td')[1].string.strip()
                 if num.find_all('td')[3].a.string.strip() == "&nbsp;":
                     gq_real_num = "0"
                     gq_lone_num = "0"
@@ -454,7 +482,7 @@ def down(dict_list, filename):
         row = line.replace('\t', '').replace('\n', '')
         dwbh = row.split("-")[0]
         dwmc = row.split("-")[1]
-        if len(dwbh) == 18 or len(dwbh) == 15:
+        if len(dwbh) > 3 :
             sjdw = dwbh[:-3]
         else:
             sjdw = ''

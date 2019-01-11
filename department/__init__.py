@@ -96,6 +96,7 @@ def save_department(department):
         cursor.execute(sql)
         db.commit()
     except:
+        print(sql)
         department_text(department.dwzd + ':' + department.dwbh + '-' + department.dwmc + '-' + '--->保存错误！')
         db.rollback()
     db.close()
