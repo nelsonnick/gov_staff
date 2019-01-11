@@ -10,12 +10,12 @@ from Down import down
 # down_structure_json(URL.YanTai, '烟台')
 # down_structure_json(URL.RiZhao, '日照')
 # down_structure_json(URL.ShengZhi, '省直')
-#
+
 # down_structure_html(URL.JiNan, '济南')
 # down_structure_html(URL.QingDao, '青岛')
 # down_structure_html(URL.ZiBo, '淄博')
-# down_structure_html(URL.ZaoZhuang, '枣庄')
-# # down_structure_html(URL.DongYing, '东营')
+down_structure_html(URL.ZaoZhuang, '枣庄')
+# down_structure_html(URL.DongYing, '东营')
 # down_structure_html(URL.WeiFang, '潍坊')
 # down_structure_html(URL.TaiAn, '泰安')
 # down_structure_html(URL.WeiHai, '威海')
@@ -26,7 +26,7 @@ from Down import down
 # down_structure_html(URL.LaiWu, '莱芜')
 # down_structure_by_html(URL.HeZe, '菏泽')
 
-down_structure_by_json(URL.JiNing)
+# down_structure_by_json(URL.JiNing)
 
 # down(URL.JiNan, '济南')
 # down(URL.QingDao, '青岛')

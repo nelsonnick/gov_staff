@@ -33,7 +33,7 @@ LiaoCheng = {
     '东昌府区': 'http://dcfsmz.lcbb.gov.cn/',
     '临清市': 'http://lqsmz.lcbb.gov.cn/',
     '茌平县': 'http://smz.cpbb.gov.cn/',
-    '东阿县': 'http://smz.debb.gov.cn/',
+    # '东阿县': 'http://smz.debb.gov.cn/',
     '高唐县': 'http://gtsmz.lcbb.gov.cn/',
     '阳谷县': 'http://smz.ygbb.gov.cn/',
     '冠县': 'http://smz.sdgxbb.gov.cn/',
@@ -47,7 +47,7 @@ ZaoZhuang = {
     '驿城区': 'http://ycsmz.sdzzbb.gov.cn/',
     '山亭区': 'http://stbb.shanting.gov.cn/',
     '台儿庄区': 'http://tezsmz.sdzzbb.gov.cn/',
-    # '滕州市': 'http://sm.tengzhou.gov.cn:8083/'
+    '滕州市': 'http://sm.tengzhou.gov.cn:8083/'
 }
 # 东营
 DongYing = {
@@ -98,7 +98,7 @@ WeiHai = {
 # 滨州
 BinZhou = {
     '市直': 'http://60.215.8.11:7002/',
-    '滨城区': 'http://smzgs.bincheng.gov.cn/',
+    # '滨城区': 'http://smzgs.bincheng.gov.cn/',
     '沾化区': 'http://218.56.22.99:8123/',
     '邹平市': 'http://zpbb.zpgd.net/',
     '惠民县': 'http://smz.hmjgbz.gov.cn/',
@@ -123,7 +123,7 @@ DeZhou = {
 }
 # 临沂
 LinYi = {
-    '市直': 'http://61.133.63.4/smzxxgs/',
+    '市直': 'http://61.133.63.4/smzxxgs/',  #目前是空白的
     # '兰山区': '',
     # '河东区': '',
     # '罗庄区': '',
