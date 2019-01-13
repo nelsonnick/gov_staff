@@ -76,7 +76,7 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         'Accept-Language': 'zh-CN,zh;q=0.9',
         'Connection': 'keep-alive',
         'DNT': '1',
-        'Host': '218.56.49.18',
+        # 'Host': '218.56.49.18',
         'Upgrade-Insecure-Requests': '1',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36'
     }
@@ -142,12 +142,12 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
         for num in number:
             if num.find_all('td')[0].string.strip().find("行政编制数") != -1:
                 if num.find_all('td')[1].font is not None:
-                    if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                    if num.find_all('td')[1].font.string.strip() == "&nbsp;" or num.find_all('td')[1].font.string.strip() == "":
                         xz_plan_num = "0"
                     else:
                         xz_plan_num = num.find_all('td')[1].font.string.strip()
                 else:
-                    if num.find_all('td')[1].string.strip() == "&nbsp;":
+                    if num.find_all('td')[1].string.strip() == "&nbsp;" or num.find_all('td')[1].string.strip() == "":
                         xz_plan_num = "0"
                     else:
                         xz_plan_num = num.find_all('td')[1].string.strip()
@@ -163,12 +163,12 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
                         xz_lone_num = num.find_all('td')[3].find_all('a')[1].string.strip()
             elif num.find_all('td')[0].string.strip().find("事业编制数") != -1:
                 if num.find_all('td')[1].font is not None:
-                    if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                    if num.find_all('td')[1].font.string.strip() == "&nbsp;" or num.find_all('td')[1].font.string.strip() == "":
                         sy_plan_num = "0"
                     else:
                         sy_plan_num = num.find_all('td')[1].font.string.strip()
                 else:
-                    if num.find_all('td')[1].string.strip() == "&nbsp;":
+                    if num.find_all('td')[1].string.strip() == "&nbsp;" or num.find_all('td')[1].string.strip() == "":
                         sy_plan_num = "0"
                     else:
                         sy_plan_num = num.find_all('td')[1].string.strip()
@@ -184,12 +184,12 @@ def down_department_details(dict_list, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc)
                         sy_lone_num = num.find_all('td')[3].find_all('a')[1].string.strip()
             elif num.find_all('td')[0].string.strip().find("工勤编制数") != -1:
                 if num.find_all('td')[1].font is not None:
-                    if num.find_all('td')[1].font.string.strip() == "&nbsp;":
+                    if num.find_all('td')[1].font.string.strip() == "&nbsp;" or num.find_all('td')[1].font.string.strip() == "":
                         gq_plan_num = "0"
                     else:
                         gq_plan_num = num.find_all('td')[1].font.string.strip()
                 else:
-                    if num.find_all('td')[1].string.strip() == "&nbsp;":
+                    if num.find_all('td')[1].string.strip() == "&nbsp;" or num.find_all('td')[1].string.strip() == "":
                         gq_plan_num = "0"
                     else:
                         gq_plan_num = num.find_all('td')[1].string.strip()
@@ -482,6 +482,14 @@ def down(dict_list, filename):
             dwlx = '事业单位'
             tab = line.count('\t')
             continue
+        if re.search(r'^\t\t\t\t\t\t\t\t下设机构$\n', line):
+            dwlx = '行政机关'
+            tab = line.count('\t')
+            continue
+        if re.search(r'^\t\t\t\t\t\t\t\t事业单位$\n', line):
+            dwlx = '事业单位'
+            tab = line.count('\t')
+            continue
         if re.search(r'^\t\t\t街道办事处$\n', line):
             dwlx = '行政机关'
             tab = line.count('\t')
@@ -492,10 +500,9 @@ def down(dict_list, filename):
             dwlx = '事业单位'
         tab = line.count('\t')
         row = line.replace('\t', '').replace('\n', '')
-        print(row)
         dwbh = row.split("-")[0]
         dwmc = row.split("-")[1]
-        if len(dwbh) > 3:
+        if len(dwbh) > 6:
             sjdw = dwbh[:-3]
         else:
             sjdw = ''
