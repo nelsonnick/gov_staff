@@ -462,7 +462,7 @@ def down(dict_list, filename):
             dwlx = '事业单位'
             tab = line.count('\t')
             continue
-        if re.search(r'^\t\t\t\t其他单位$\n', line):
+        if re.search(r'^\t\t\t\t其它单位$\n', line):
             dwlx = '事业单位'
             tab = line.count('\t')
             continue
