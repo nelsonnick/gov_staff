@@ -31,8 +31,8 @@ CREATE TABLE `department` (
   `qtmc` varchar(255) DEFAULT NULL COMMENT '其他名称',
   `ldzs` varchar(255) DEFAULT NULL COMMENT '领导职数',
   `jb` varchar(255) DEFAULT NULL COMMENT '级别',
-  `nsjg` varchar(999) DEFAULT NULL COMMENT '内设机构',
-  `zyzz` varchar(9999) DEFAULT NULL COMMENT '主要职责',
+  `nsjg` varchar(2999) DEFAULT NULL COMMENT '内设机构',
+  `zyzz` varchar(2999) DEFAULT NULL COMMENT '主要职责',
   `xz_plan_num` varchar(255) DEFAULT NULL COMMENT '行政编制数',
   `xz_real_num` varchar(255) DEFAULT NULL COMMENT '行政实际数',
   `xz_lone_num` varchar(255) DEFAULT NULL COMMENT '行政单列数',
@@ -52,9 +52,15 @@ CREATE TABLE `department` (
 DROP TABLE IF EXISTS `department_err`;
 CREATE TABLE `department_err` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `szcs` varchar(255) DEFAULT NULL COMMENT '所在城市',
+  `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
+  `dwlb` varchar(255) DEFAULT NULL COMMENT '单位类别',
+  `dwlx` varchar(255) DEFAULT NULL COMMENT '单位类型',
+  `sjdw` varchar(255) DEFAULT NULL COMMENT '上级单位',
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `url` varchar(255) DEFAULT NULL COMMENT '访问网址',
+  `time` varchar(255) DEFAULT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------

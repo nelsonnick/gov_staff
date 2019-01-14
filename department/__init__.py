@@ -96,18 +96,17 @@ def save_department(department):
         cursor.execute(sql)
         db.commit()
     except:
-        print(sql)
         department_text(department.dwzd + ':' + department.dwbh + '-' + department.dwmc + '-' + '--->保存错误！')
         db.rollback()
     db.close()
 
 
 # 保存错误的单位信息到数据库
-# 参数：单位编号、单位名称、访问网址
-def get_department_err(dwbh, dwmc, url):
+# 参数：所在城市、单位驻地、单位类别、单位类型、上级单位、单位编号、单位名称、访问网址、更新日期
+def get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO department_err(dwbh, dwmc, url)VALUES ('%s', '%s', '%s')" % (dwbh, dwmc, url)
+    sql = "INSERT INTO department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time)VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time)
     try:
         cursor.execute(sql)
         db.commit()
