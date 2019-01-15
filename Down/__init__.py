@@ -111,7 +111,7 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
         soup = BeautifulSoup(response.text, "html.parser").find('div', style="width: 757; height: 582; background-color: #EFF8FF;").table.find_all('tr')[2].td.table
         # soup = BeautifulSoup(rt.text, "html.parser").div.table.find_all('tr')[2].td.table
     except AttributeError:
-        get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time)
+        get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, base, time)
         return
     else:
         if soup.find_all('tr')[0].find_all('td')[1].span.string is not None:

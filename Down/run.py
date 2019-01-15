@@ -12,7 +12,7 @@ from Down import down_error
 # down_structure_json(URL.RiZhao, '日照')
 # down_structure_json(URL.ShengZhi, '省直')
 
-down_structure_html(URL.JiNan, '济南')
+# down_structure_html(URL.JiNan, '济南')
 # down_structure_html(URL.QingDao, '青岛')
 # down_structure_html(URL.ZiBo, '淄博')
 # down_structure_html(URL.ZaoZhuang, '枣庄')
@@ -30,7 +30,7 @@ down_structure_html(URL.JiNan, '济南')
 # down_structure_by_json(URL.JiNing)
 
 # down(URL.ShengZhi, '省直')
-# down(URL.JiNan, '济南')
+down(URL.JiNan, '济南')
 # down(URL.QingDao, '青岛')
 # down(URL.ZiBo, '淄博')
 # down(URL.ZaoZhuang, '枣庄')
