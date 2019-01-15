@@ -59,7 +59,7 @@ CREATE TABLE `department_err` (
   `sjdw` varchar(255) DEFAULT NULL COMMENT '上级单位',
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
-  `url` varchar(255) DEFAULT NULL COMMENT '访问网址',
+  `base` varchar(255) DEFAULT NULL COMMENT '基础网址',
   `time` varchar(255) DEFAULT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

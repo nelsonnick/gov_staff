@@ -6,12 +6,13 @@ from Down import down_structure_html
 from Down import down_structure_by_html
 from JiNing import down_structure_by_json
 from Down import down
+from Down import down_error
 
 # down_structure_json(URL.YanTai, '烟台')
 # down_structure_json(URL.RiZhao, '日照')
 # down_structure_json(URL.ShengZhi, '省直')
 
-# down_structure_html(URL.JiNan, '济南')
+down_structure_html(URL.JiNan, '济南')
 # down_structure_html(URL.QingDao, '青岛')
 # down_structure_html(URL.ZiBo, '淄博')
 # down_structure_html(URL.ZaoZhuang, '枣庄')
@@ -29,7 +30,7 @@ from Down import down
 # down_structure_by_json(URL.JiNing)
 
 # down(URL.ShengZhi, '省直')
-down(URL.JiNan, '济南')
+# down(URL.JiNan, '济南')
 # down(URL.QingDao, '青岛')
 # down(URL.ZiBo, '淄博')
 # down(URL.ZaoZhuang, '枣庄')
@@ -45,6 +46,4 @@ down(URL.JiNan, '济南')
 # down(URL.LaiWu, '莱芜')
 
 # down(URL.JiNing, '济宁')
-
-
-
+# down_error()

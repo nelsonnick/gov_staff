@@ -102,16 +102,16 @@ def save_department(department):
 
 
 # 保存错误的单位信息到数据库
-# 参数：所在城市、单位驻地、单位类别、单位类型、上级单位、单位编号、单位名称、访问网址、更新日期
-def get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time):
+# 参数：所在城市、单位驻地、单位类别、单位类型、上级单位、单位编号、单位名称、基础网址、更新日期
+def get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, base, time):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time)VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time)
+    sql = "INSERT INTO department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, base, time)VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % (szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, base, time)
     try:
         cursor.execute(sql)
         db.commit()
     except:
-        department_text(dwbh + '-' + dwmc + '-' + url + '--->打开单位信息错误！')
+        department_text(dwbh + '-' + dwmc + '-' + base + "UnitDetails.aspx?unitId=" + dwbh + '--->打开单位信息错误！')
         db.rollback()
     db.close()
 

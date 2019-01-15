@@ -104,7 +104,7 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
     try:
         response = requests.get(url, timeout=1000, headers=headers)
     except:
-        get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, url, time)
+        get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, base, time)
         return
     response.encoding = 'utf-8'
     try:
@@ -233,147 +233,6 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
                 lx = re.search(re.compile(r'BZLX=.+?$'), num.find_all('td')[3].a['href']).group(0)
                 bzlx = lx[5:len(lx)]
                 down_person_list(base, dwbh, dwmc, bzlx)
-            save_department(
-                get_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
-                     xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time))
-        else:
-            department_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + '--->无编制人员！')
-
-
-# 下载未保存成功的单位信息
-# 参数：网址、所在城市、单位驻地、单位类别、单位类型、上级部门、单位编号、单位名称、更新日期
-def down_department_details_err(url, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time):
-    xz_plan_num = xz_real_num = xz_lone_num = sy_plan_num = sy_real_num = sy_lone_num = gq_plan_num = gq_real_num = gq_lone_num = '0'
-    try:
-        response = requests.get(url, timeout=1000, headers=headers)
-    except:
-        department_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + '--->二次下载失败！')
-        return
-    response.encoding = 'utf-8'
-    try:
-        soup = BeautifulSoup(response.text, "html.parser").find('div', style="width: 757; height: 582; background-color: #EFF8FF;").table.find_all('tr')[2].td.table
-    except AttributeError:
-        department_text(dwzd + ':' + dwbh + '-' + dwmc + '-' + '--->二次下载失败！')
-        return
-    else:
-        if soup.find_all('tr')[0].find_all('td')[1].span.string is not None:
-            dwmc = soup.find_all('tr')[0].find_all('td')[1].span.string.strip()
-        elif soup.find_all('tr')[0].find_all('td')[1].span.b.font.string is not None:
-            dwmc = soup.find_all('tr')[0].find_all('td')[1].span.b.font.string.strip()
-        else:
-            dwmc = ''
-        if dwmc == '':
-            department_text('编号：' + dwbh + '-->不存在！')
-            return
-        if soup.find_all('tr')[1].find_all('td')[1].string is not None:
-            qtmc = soup.find_all('tr')[1].find_all('td')[1].string.strip()
-        else:
-            qtmc = ''
-        if soup.find_all('tr')[2].find_all('td')[1].span.string is not None:
-            ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
-        else:
-            ldzs = ''
-        if soup.find_all('tr')[2].find_all('td')[3].span.string is None:
-            jb = ''
-        else:
-            try:
-                soup.find_all('tr')[2].find_all('td')[3].span.b.font.string
-            except AttributeError:
-                jb = soup.find_all('tr')[2].find_all('td')[3].span.string.strip()
-            else:
-                if soup.find_all('tr')[2].find_all('td')[3].span.b.font.string is not None:
-                    jb = soup.find_all('tr')[2].find_all('td')[3].span.b.font.string.strip()
-                else:
-                    jb = ''
-        if soup.find_all(id="lblNeiSheJG")[0].string is not None:
-            nsjg = soup.find_all(id="lblNeiSheJG")[0].string.strip()
-        else:
-            nsjg = ''
-        if nsjg == "\'":
-            nsjg = ''
-            # 有一行的情况
-        if soup.find_all(id="lblMainDuty")[0].string is not None:
-            zyzz = soup.find_all(id="lblMainDuty")[0].string.strip()
-        else:
-            # 获取单位的主要职责：大部分主要职责似乎是延迟加载，正常的方式抓取不到，需要借助浏览器
-            # browser = webdriver.Chrome()
-            # browser.get(url)
-            # rt = browser.page_source
-            # browser.close()
-            # zyzz = BeautifulSoup(rt, "html.parser").find_all(id="lblMainDuty")[0].get_text()
-            zyzz = ''
-        if zyzz == "\'":
-            zyzz = ''
-        if soup.find_all('tr')[4].td.div.table is not None:
-            number = soup.find_all('tr')[4].td.div.table.find_all('tr')
-            for num in number:
-                if num.find_all('td')[0].string.strip().find("行政编制数") != -1:
-                    if num.find_all('td')[1].font is not None:
-                        if num.find_all('td')[1].font.string.strip() == "&nbsp;" or num.find_all('td')[1].font.string.strip() == "":
-                            xz_plan_num = "0"
-                        else:
-                            xz_plan_num = num.find_all('td')[1].font.string.strip()
-                    else:
-                        if num.find_all('td')[1].string.strip() == "&nbsp;" or num.find_all('td')[1].string.strip() == "":
-                            xz_plan_num = "0"
-                        else:
-                            xz_plan_num = num.find_all('td')[1].string.strip()
-                    if num.find_all('td')[3].a.string.strip() == "&nbsp;":
-                        xz_real_num = "0"
-                        xz_lone_num = "0"
-                    else:
-                        if len(num.find_all('td')[3].find_all('a')) == 1:
-                            xz_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
-                            xz_lone_num = "0"
-                        else:
-                            xz_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
-                            xz_lone_num = num.find_all('td')[3].find_all('a')[1].string.strip()
-                elif num.find_all('td')[0].string.strip().find("事业编制数") != -1:
-                    if num.find_all('td')[1].font is not None:
-                        if num.find_all('td')[1].font.string.strip() == "&nbsp;" or num.find_all('td')[1].font.string.strip() == "":
-                            sy_plan_num = "0"
-                        else:
-                            sy_plan_num = num.find_all('td')[1].font.string.strip()
-                    else:
-                        if num.find_all('td')[1].string.strip() == "&nbsp;" or num.find_all('td')[1].string.strip() == "":
-                            sy_plan_num = "0"
-                        else:
-                            sy_plan_num = num.find_all('td')[1].string.strip()
-                    if num.find_all('td')[3].a.string.strip() == "&nbsp;":
-                        sy_real_num = "0"
-                        sy_lone_num = "0"
-                    else:
-                        if len(num.find_all('td')[3].find_all('a')) == 1:
-                            sy_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
-                            sy_lone_num = "0"
-                        else:
-                            sy_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
-                            sy_lone_num = num.find_all('td')[3].find_all('a')[1].string.strip()
-                elif num.find_all('td')[0].string.strip().find("工勤编制数") != -1:
-                    if num.find_all('td')[1].font is not None:
-                        if num.find_all('td')[1].font.string.strip() == "&nbsp;" or num.find_all('td')[1].font.string.strip() == "":
-                            gq_plan_num = "0"
-                        else:
-                            gq_plan_num = num.find_all('td')[1].font.string.strip()
-                    else:
-                        if num.find_all('td')[1].string.strip() == "&nbsp;" or num.find_all('td')[1].string.strip() == "":
-                            gq_plan_num = "0"
-                        else:
-                            gq_plan_num = num.find_all('td')[1].string.strip()
-                    if num.find_all('td')[3].a.string.strip() == "&nbsp;":
-                        gq_real_num = "0"
-                        gq_lone_num = "0"
-                    else:
-                        if len(num.find_all('td')[3].find_all('a')) == 1:
-                            gq_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
-                            gq_lone_num = "0"
-                        else:
-                            gq_real_num = num.find_all('td')[3].find_all('a')[0].string.strip()
-                            gq_lone_num = num.find_all('td')[3].find_all('a')[1].string.strip()
-                else:
-                    pass
-                lx = re.search(re.compile(r'BZLX=.+?$'), num.find_all('td')[3].a['href']).group(0)
-                bzlx = lx[5:len(lx)]
             save_department(
                 get_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
                      xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time))
@@ -682,7 +541,7 @@ def down_error():
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
     try:
-        cursor.execute("SELECT szcs,dwzd,dwlb,dwlx,sjdw,dwbh,dwmc,url,time FROM department_err")
+        cursor.execute("SELECT szcs,dwzd,dwlb,dwlx,sjdw,dwbh,dwmc,base,time FROM department_err")
         results = cursor.fetchall()
         for row in results:
             szcs = row[0]
@@ -692,9 +551,9 @@ def down_error():
             sjdw = row[4]
             dwbh = row[5]
             dwmc = row[6]
-            url = row[7]
+            base = row[7]
             time = row[8]
-        down_department_details_err(url, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time)
+            down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time)
     except:
         pass
     db.close()
