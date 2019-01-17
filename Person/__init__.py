@@ -4,9 +4,14 @@ import pymysql
 
 
 # Person类
-# 单位编号、单位名称、所属部门、人员姓名、人员性别、编制类型、占用编制情况
+# 参数：所在城市、单位驻地、单位类别、单位类型、上级单位、单位编号、单位名称、所属部门、人员姓名、人员性别、编制类型、占用编制情况
 class Person:
-    def __init__(self, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk):
+    def __init__(self, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk):
+        self.szcs = szcs
+        self.dwzd = dwzd
+        self.dwlb = dwlb
+        self.dwlx = dwlx
+        self.sjdw = sjdw
         self.dwbh = dwbh
         self.dwmc = dwmc
         self.ssbm = ssbm
@@ -17,9 +22,9 @@ class Person:
 
 
 # 根据信息生成人员实例
-# 参数：当前页面所含列信息、详细信息、单位驻地、单位编号、编制类型
+# 参数：所在城市、单位驻地、单位类别、单位类型、上级单位、当前页面所含列信息、详细信息、单位驻地、单位编号、编制类型
 # 返回：人员实例
-def get_person(cols, info, dwbh, bzlx):
+def get_person(szcs, dwzd, dwlb, dwlx, sjdw, cols, info, dwbh, bzlx):
     try:
         cols.index(['单位'])
     except ValueError:
@@ -70,7 +75,7 @@ def get_person(cols, info, dwbh, bzlx):
         zybzqk = info[zybzqk_num][4:len(info[zybzqk_num]) - 5]
     else:
         zybzqk = ''
-    return Person(dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, zybzqk)
+    return Person(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, zybzqk)
 
 
 # 保存人员信息到数据库
@@ -78,9 +83,9 @@ def get_person(cols, info, dwbh, bzlx):
 def save_person(person):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO person(dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk) \
-                                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
-          (person.dwbh, person.dwmc, person.ssbm, person.ryxm, person.ryxb, person.bzlx, person.bzqk)
+    sql = "INSERT INTO Person(szcs, dwzd, dwlb, dwlx, sjdw,dwbh, dwmc, ssbm, ryxm, ryxb, bzlx, bzqk) \
+                                      VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
+          (person.szcs, person.dwzd, person.dwlb, person.dwlx, person.sjdw, person.dwbh, person.dwmc, person.ssbm, person.ryxm, person.ryxb, person.bzlx, person.bzqk)
     try:
         cursor.execute(sql)
         db.commit()

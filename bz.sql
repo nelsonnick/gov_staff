@@ -16,7 +16,7 @@ Date: 2017-12-07 13:27:59
 SET FOREIGN_KEY_CHECKS=1;
 
 -- ----------------------------
--- Table structure for department
+-- Table structure for Department
 -- ----------------------------
 DROP TABLE IF EXISTS `department`;
 CREATE TABLE `department` (
@@ -64,11 +64,16 @@ CREATE TABLE `department_err` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------
--- Table structure for person
+-- Table structure for Person
 -- ----------------------------
 DROP TABLE IF EXISTS `person`;
 CREATE TABLE `person` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `szcs` varchar(255) DEFAULT NULL COMMENT '所在城市',
+  `dwzd` varchar(255) DEFAULT NULL COMMENT '单位驻地',
+  `dwlb` varchar(255) DEFAULT NULL COMMENT '单位类别',
+  `dwlx` varchar(255) DEFAULT NULL COMMENT '单位类型',
+  `sjdw` varchar(255) DEFAULT NULL COMMENT '上级单位',
   `dwbh` varchar(255) DEFAULT NULL COMMENT '单位编号',
   `dwmc` varchar(255) DEFAULT NULL COMMENT '单位名称',
   `ssbm` varchar(255) DEFAULT NULL COMMENT '所属部门',

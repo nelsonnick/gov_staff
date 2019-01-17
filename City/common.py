@@ -7,14 +7,14 @@ import os
 import pymysql
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from person import get_person
-from person import save_person
-from person import get_person_err
-from person import person_text
-from department import get_department_err
-from department import department_text
-from department import save_department
-from department import get_department
+from Person import get_person
+from Person import save_person
+from Person import get_person_err
+from Person import person_text
+from Department import get_department_err
+from Department import department_text
+from Department import save_department
+from Department import get_department
 
 headers = {}
 # headers = {
@@ -59,7 +59,7 @@ def get_person_url(base, dwbh, bzlx):
 
 # 下载人员信息
 # 参数：基础网址、单位编号、单位名称、编制类型
-def down_person_list(base, dwbh, dwmc, bzlx):
+def down_person_list(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, bzlx):
     url = get_person_url(base, dwbh, bzlx)
     try:
         rt = requests.get(url, timeout=1000, headers=headers)
@@ -76,19 +76,19 @@ def down_person_list(base, dwbh, dwmc, bzlx):
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person(cols, information, dwbh, bzlx))
+            save_person(get_person(szcs, dwzd, dwlb, dwlx, sjdw, cols, information, dwbh, bzlx))
         person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 4:
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person(cols, information, dwbh, bzlx))
+            save_person(get_person(szcs, dwzd, dwlb, dwlx, sjdw, cols, information, dwbh, bzlx))
         person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 5:
         persons = re.findall(r'<td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td><td>.+?</td>', key)
         for person in persons:
             information = re.findall(r'<td>.+?</td>', person)
-            save_person(get_person(cols, information, dwbh, bzlx))
+            save_person(get_person(szcs, dwzd, dwlb, dwlx, sjdw, cols, information, dwbh, bzlx))
         person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->下载完成！')
     elif len(cols) == 0:
         person_text(dwbh + '-' + dwmc + '-' + bzlx + '--->无人员信息！')
@@ -232,7 +232,7 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
                     pass
                 lx = re.search(re.compile(r'BZLX=.+?$'), num.find_all('td')[3].a['href']).group(0)
                 bzlx = lx[5:len(lx)]
-                down_person_list(base, dwbh, dwmc, bzlx)
+                down_person_list(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, bzlx)
             save_department(
                 get_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg, zyzz, xz_plan_num, xz_real_num,
                      xz_lone_num, sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time))
@@ -528,7 +528,7 @@ def down(dict_list, filename):
         row = line.replace('\t', '').replace('\n', '')
         dwbh = row.split("-")[0]
         dwmc = row.split("-")[1]
-        if len(dwbh) > 6:
+        if len(dwbh) > 12:
             sjdw = dwbh[:-3]
         else:
             sjdw = ''

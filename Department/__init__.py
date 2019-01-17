@@ -84,7 +84,7 @@ def get_department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsj
 def save_department(department):
     db = pymysql.connect("localhost", "root", "root", "bz", charset='utf8')
     cursor = db.cursor()
-    sql = "INSERT INTO department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg,zyzz, xz_plan_num, xz_real_num, xz_lone_num," \
+    sql = "INSERT INTO Department(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, qtmc, ldzs, jb, nsjg,zyzz, xz_plan_num, xz_real_num, xz_lone_num," \
           " sy_plan_num, sy_real_num, sy_lone_num, gq_plan_num, gq_real_num, gq_lone_num, url, time) \
               VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')" % \
           (department.szcs, department.dwzd, department.dwlb, department.dwlx, department.sjdw, department.dwbh,
