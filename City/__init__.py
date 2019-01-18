@@ -152,12 +152,4 @@ JiNing = {
     # '泗水县': 'http://www.jnjgbz.gov.cn/jnssbb/'
 
 }
-# 烟台 var zNodes = []
-YanTai = {
-    '烟台': 'http://smz.yantai.gov.cn/'
-}
-# 日照 var zNodes = []
-RiZhao = {
-    '日照': 'http://www.rzbb.gov.cn/smzxxnew/',
-}
 
