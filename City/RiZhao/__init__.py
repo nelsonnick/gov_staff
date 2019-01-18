@@ -5,6 +5,7 @@ import re
 import json
 import os
 import pymysql
+import urllib
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from Person import get_person
@@ -22,7 +23,7 @@ headers = {
     'Accept-Language': 'zh-CN,zh;q=0.9',
     'Connection': 'keep-alive',
     'DNT': '1',
-    'Host': 'smz.yantai.gov.cn',
+    'Host': 'www.rzbb.gov.cn',
     'Upgrade-Insecure-Requests': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.67 Safari/537.36'
 }
@@ -85,9 +86,13 @@ def get_department_url(base, dwbh):
 
 
 # 获取网址
+# %D0%D0%D5%FE%B1%E0%D6%C6 行政编制
+# %CA%C2%D2%B5%B1%E0%D6%C6 事业编制
+# %B9%A4%C7%DA%B1%E0%D6%C6 工勤编制
 # 参数：基础网址、单位编号、编制类型
 def get_person_url(base, dwbh, bzlx):
-    return base + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + bzlx
+    s = urllib.parse.quote(bzlx, safe='/', encoding="gb2312", errors=None)
+    return base + "PersonList.aspx?unitId=" + dwbh + "&BZLX=" + s
 
 
 # 下载人员信息
@@ -101,6 +106,7 @@ def down_person_list(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, bzlx):
         return
     key = rt.text
     titles = re.findall(r'<th.+?</th>', key)
+
     # 不同的地区，展示的信息有区别：3列、4列、5列
     cols = []
     for title in titles:
@@ -139,7 +145,7 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
     except:
         get_department_err(szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, base, time)
         return
-    response.encoding = 'utf-8'
+    # response.encoding = 'utf-8' #日照有这个就出错
     try:
         soup = BeautifulSoup(response.text, "html.parser").find('div', style="width: 757; height: 582; background-color: #EFF8FF;").table.find_all('tr')[2].td.table
         # soup = BeautifulSoup(response.text, "html.parser").div.table.find_all('tr')[2].td.table
@@ -160,7 +166,7 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
             qtmc = soup.find_all('tr')[1].find_all('td')[1].string.strip()
         else:
             qtmc = ''
-        if qtmc == "空":
+        if qtmc == "无":
             qtmc = ''
         if soup.find_all('tr')[2].find_all('td')[1].span.string is not None:
             ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
@@ -399,7 +405,7 @@ def down_detail(dict_list, filename):
         row = line.replace('\t', '').replace('\n', '')
         dwbh = row.split("-")[0]
         dwmc = row.split("-")[1]
-        if len(dwbh) > 6:
+        if len(dwbh) > 12:
             sjdw = dwbh[:-3]
         else:
             sjdw = ''

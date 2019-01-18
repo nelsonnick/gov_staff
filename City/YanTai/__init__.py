@@ -73,7 +73,6 @@ def get_time(dict_list, dwzd):
         try:
             time = BeautifulSoup(response.text, "html.parser").find_all(id="SPAN1")[0].get_text()[9:]
         except IndexError as error:
-            print(BeautifulSoup(response.text, "html.parser").find_all(id="SPAN1")[0])
             print(error)
     return time
 
@@ -160,7 +159,7 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
             qtmc = soup.find_all('tr')[1].find_all('td')[1].string.strip()
         else:
             qtmc = ''
-        if qtmc == "空":
+        if qtmc == "无":
             qtmc = ''
         if soup.find_all('tr')[2].find_all('td')[1].span.string is not None:
             ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
@@ -399,7 +398,7 @@ def down_detail(dict_list, filename):
         row = line.replace('\t', '').replace('\n', '')
         dwbh = row.split("-")[0]
         dwmc = row.split("-")[1]
-        if len(dwbh) > 6:
+        if len(dwbh) > 12:
             sjdw = dwbh[:-3]
         else:
             sjdw = ''

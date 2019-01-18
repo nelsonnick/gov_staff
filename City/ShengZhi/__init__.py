@@ -160,7 +160,7 @@ def down_department_details(base, szcs, dwzd, dwlb, dwlx, sjdw, dwbh, dwmc, time
             qtmc = soup.find_all('tr')[1].find_all('td')[1].string.strip()
         else:
             qtmc = ''
-        if qtmc == "空":
+        if qtmc == "无":
             qtmc = ''
         if soup.find_all('tr')[2].find_all('td')[1].span.string is not None:
             ldzs = soup.find_all('tr')[2].find_all('td')[1].span.string.strip()
